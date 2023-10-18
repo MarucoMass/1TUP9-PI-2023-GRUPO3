@@ -2,13 +2,34 @@ Algoritmo sin_titulo
 	
 	Definir opcionS Como Entero
 	
-	Definir entrada, entradaMayu Como Caracter
+	Definir entrada, entradaMayu, turnosHorarios, horarios Como Caracter
+	
+	Dimension horarios[8]
+	horarios[0] = "08:00"
+	horarios[1] = "08:30"
+	horarios[2] = "09:00"
+	horarios[3] = "09:30"
+	horarios[4] = "10:00"
+	horarios[5] = "10:30"
+	horarios[6] = "11:00"
+	horarios[7] = "11:30"
+	
+	Dimension turnosHorarios[5, 9]
+	turnosHorarios[0,0] = "Lunes"
+	turnosHorarios[1,0] = "Martes"
+	turnosHorarios[2,0] = "Miércoles"
+	turnosHorarios[3,0] = "Jueves"
+	turnosHorarios[4,0] = "Viernes"
+	
+	Para i = 0 Hasta 4 
+		Para j = 0 Hasta 7  
+			turnosHorarios[i,j + 1] = horarios[j]
+		FinPara
+	FinPara
 	
 	entrada = ""
 	
 	Repetir
-		
-		
 		
 		Escribir "1. Reservar turno"
 		
@@ -24,12 +45,9 @@ Algoritmo sin_titulo
 		
 		Escribir "5. Listado/s"
 		
-		Escribir "   a. Cantidad turnos otorgados por d�a"
+		Escribir "   a. Cantidad turnos otorgados por día"
 		
 		Escribir "   b. Cantidad de vacunas a aplicar por vacuna"
-		
-		
-		
 		
 		
 		Escribir "Ingrese un numero(o SALIR)"
@@ -53,7 +71,7 @@ Algoritmo sin_titulo
 				
 				Escribir "Funcion reservar"
 				
-				//Funcion reservar
+				mostrarArreglo(turnosHorarios, 5, 9)
 				
 			"2":
 				
@@ -85,8 +103,14 @@ Algoritmo sin_titulo
 	
 	Escribir "Se salio del sistema"
 	
-	
-	
-	
-	
 FinAlgoritmo
+
+
+SubProceso mostrarArreglo(arreglo, filas, columnas)
+	Para i = 0 Hasta filas - 1
+		Para j = 0 hasta columnas - 1
+			Mostrar arreglo[i, j]
+		FinPara
+	FinPara
+FinSubProceso
+	
