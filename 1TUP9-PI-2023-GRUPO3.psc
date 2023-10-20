@@ -20,7 +20,7 @@ Algoritmo sin_titulo
 	Dimension turnosHorarios[5, 9]
 	turnosHorarios[0,0] = "1. Lunes"
 	turnosHorarios[1,0] = "2. Martes"
-	turnosHorarios[2,0] = "3. MiÃ©rcoles"
+	turnosHorarios[2,0] = "3. Miércoles"
 	turnosHorarios[3,0] = "4. Jueves"
 	turnosHorarios[4,0] = "5. Viernes"
 	
@@ -49,7 +49,7 @@ Algoritmo sin_titulo
 		
 		Escribir "5. Listado/s"
 		
-		Escribir "   a. Cantidad turnos otorgados por dÃ­a"
+		Escribir "   a. Cantidad turnos otorgados por día"
 		
 		Escribir "   b. Cantidad de vacunas a aplicar por vacuna"
 		
@@ -76,8 +76,6 @@ Algoritmo sin_titulo
 				Escribir "Funcion reservar"
 				
 				mostrarHorarios(turnosHorarios, 5, 9)
-				
-				elegirHorario(turnosHorarios, 9)
 				
 			"2":
 				
@@ -113,13 +111,18 @@ FinAlgoritmo
 
 
 
-SubProceso mostrarHorarios(turnosHorarios, filas, columnas)
+SubProceso mostrarHorarios(arreglo, filas, columnas)
 	Para i = 0 Hasta filas - 1
-		Mostrar turnosHorarios[i, 0] , ":"
+		Mostrar arreglo[i, 0] , ":"
 		Para j = 1 hasta columnas - 1
-			Mostrar "  " , turnosHorarios[i, j]
+			Mostrar "  " , arreglo[i, j]
 		FinPara
 	FinPara
+	
+	// mando a llamar este subproceso aca para que una vez que muestre los dias se ejecute la eleccion del horario
+	//tambien por si elige un dia "ocupado" asi vuelve para atras y elige otro dia
+	elegirHorario(arreglo, 9)
+	
 FinSubProceso
 
 
@@ -139,10 +142,16 @@ SubProceso elegirHorario(arreglo, filas)
 	Escribir "Elija la hora 1-8"
 	Leer hora
 	
-	Mientras hora < 1 o hora > 8 o arreglo[dia - 1, hora] = "Ocupado"
-		Escribir "Elija otro horario por favor"
+	Mientras hora < 1 o hora > 8 
+		Escribir "Error: elija el horario 1-8"
 		Leer hora
 	FinMientras
+	
+	// Aca si elige un dia que esta "ocupado" manda a llamar al subproceso que muestra los dias
+	Si arreglo[dia - 1, hora] = "Ocupado"
+		Escribir "Elija otro horario por favor. Ese ya está ocupado"
+		mostrarHorarios(arreglo, 5, 9)
+	FinSi
 	
 	arreglo[dia - 1, hora] = "Ocupado"
 
