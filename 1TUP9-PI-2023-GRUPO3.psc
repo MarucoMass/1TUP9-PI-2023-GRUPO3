@@ -2,25 +2,29 @@ Algoritmo sin_titulo
 	
 	Definir opcionS Como Entero
 	
+
 	Definir entrada, entradaMayu, turnosHorarios, horarios Como Caracter
 	
+	// array con las horas
 	Dimension horarios[8]
-	horarios[0] = "08:00"
-	horarios[1] = "08:30"
-	horarios[2] = "09:00"
-	horarios[3] = "09:30"
-	horarios[4] = "10:00"
-	horarios[5] = "10:30"
-	horarios[6] = "11:00"
-	horarios[7] = "11:30"
+	horarios[0] = "  1- 08:00"
+	horarios[1] = "  2- 08:30"
+	horarios[2] = "  3- 09:00"
+	horarios[3] = "  4- 09:30"
+	horarios[4] = "  5- 10:00"
+	horarios[5] = "  6- 10:30"
+	horarios[6] = "  7- 11:00"
+	horarios[7] = "  8- 11:30"
 	
+	// array con los dias
 	Dimension turnosHorarios[5, 9]
-	turnosHorarios[0,0] = "Lunes"
-	turnosHorarios[1,0] = "Martes"
-	turnosHorarios[2,0] = "Miércoles"
-	turnosHorarios[3,0] = "Jueves"
-	turnosHorarios[4,0] = "Viernes"
+	turnosHorarios[0,0] = "1. Lunes"
+	turnosHorarios[1,0] = "2. Martes"
+	turnosHorarios[2,0] = "3. Miércoles"
+	turnosHorarios[3,0] = "4. Jueves"
+	turnosHorarios[4,0] = "5. Viernes"
 	
+	// ciclo para cargar el arreglo de los horarios
 	Para i = 0 Hasta 4 
 		Para j = 0 Hasta 7  
 			turnosHorarios[i,j + 1] = horarios[j]
@@ -71,7 +75,9 @@ Algoritmo sin_titulo
 				
 				Escribir "Funcion reservar"
 				
-				mostrarArreglo(turnosHorarios, 5, 9)
+				mostrarHorarios(turnosHorarios, 5, 9)
+				
+				elegirHorario(turnosHorarios, 9)
 				
 			"2":
 				
@@ -106,11 +112,40 @@ Algoritmo sin_titulo
 FinAlgoritmo
 
 
-SubProceso mostrarArreglo(arreglo, filas, columnas)
+
+SubProceso mostrarHorarios(turnosHorarios, filas, columnas)
 	Para i = 0 Hasta filas - 1
-		Para j = 0 hasta columnas - 1
-			Mostrar arreglo[i, j]
+		Mostrar turnosHorarios[i, 0] , ":"
+		Para j = 1 hasta columnas - 1
+			Mostrar "  " , turnosHorarios[i, j]
 		FinPara
 	FinPara
 FinSubProceso
+
+
+SubProceso elegirHorario(arreglo, filas)
+	Escribir "Elija el dia 1-5"
+	Leer dia
+	
+	Mientras dia < 1 o dia > 5
+		Escribir "Error: elija el dia 1-5"
+		Leer dia
+	FinMientras
+	
+	Para i = 0 hasta filas - 1
+		Mostrar arreglo[dia - 1, i]
+	FinPara
+	
+	Escribir "Elija la hora 1-8"
+	Leer hora
+	
+	Mientras hora < 1 o hora > 8 o arreglo[dia - 1, hora] = "Ocupado"
+		Escribir "Elija otro horario por favor"
+		Leer hora
+	FinMientras
+	
+	arreglo[dia - 1, hora] = "Ocupado"
+
+FinSubProceso
+
 	
