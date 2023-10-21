@@ -33,16 +33,16 @@ Algoritmo sin_titulo
 	
 	// array de vacunas
 	Dimension vacunas[6]
-	vacunas[0] = "Neumococo conjugada"
-	vacunas[1] = "Poliomielitis (IPV o Salk)"
-	vacunas[2] = "Quíntuple (o pentavalente)"
-	vacunas[3] = "Rotavirus"
-	vacunas[4] = "Meningococo"
-	vacunas[5] = "Tripe Viral"
+	vacunas[0] = "1-Neumococo conjugada"
+	vacunas[1] = "2-Poliomielitis (IPV o Salk)"
+	vacunas[2] = "3-Quíntuple (o pentavalente)"
+	vacunas[3] = "4-Rotavirus"
+	vacunas[4] = "5-Meningococo"
+	vacunas[5] = "6-Tripe Viral"
 	
 	// array del stock cuyo indice corresponde al del arrays de vacunas
 	Dimension stockVacunas[6]
-	stockVacunas[0] = 10
+	stockVacunas[0] = 1
 	stockVacunas[1] = 10
 	stockVacunas[2] = 10
 	stockVacunas[3] = 10
@@ -94,13 +94,13 @@ Algoritmo sin_titulo
 			"1":
 				Escribir "Funcion reservar"
 				
-				mostrarHorarios(turnosHorarios, 5, 9, pacientes,indice)
+				mostrarHorarios(turnosHorarios, 5, 9, pacientes,indice, vacunas, stockVacunas, vacunasSelec)
 				
-				Para i = 0 Hasta indice - 1 Hacer
-					para j = 0 hasta 5 Hacer
-						Mostrar pacientes[i, j]
-					FinPara
-				FinPara
+				//Para i = 0 Hasta indice - 1 Hacer
+					//para j = 0 hasta 5 Hacer
+						//Mostrar pacientes[i, j]
+					//FinPara
+				//FinPara
 			"2":
 				
 				Escribir "Funcion buscar"
@@ -135,22 +135,29 @@ FinAlgoritmo
 
 
 
-SubProceso mostrarHorarios(arreglo, filas, columnas, pacientes, indice Por Referencia)
+SubProceso mostrarHorarios(arreglo, filas, columnas, pacientes, indice Por Referencia,vacunas , stockVacunas Por Referencia, vacunasSelec Por Referencia)
 	Para i = 0 Hasta filas - 1
-		Mostrar arreglo[i, 0] , ":"
+		Mostrar arreglo[i, 0], ":"
+		TodasOcupadas = Verdadero 
 		Para j = 1 hasta columnas - 1
-			Mostrar "  " , arreglo[i, j]
+			Si arreglo[i, j] <> "  Ocupado" Entonces
+				TodasOcupadas = Falso
+				
+			FinSi
 		FinPara
+		Si TodasOcupadas Entonces
+			arreglo[i, 0] = "No hay turnos disponibles para este día"
+		FinSi
 	FinPara
 	
 	// mando a llamar este subproceso aca para que una vez que muestre los dias se ejecute la eleccion del horario
 	//tambien por si elige un dia "ocupado" asi vuelve para atras y elige otro dia
-	elegirHorario(arreglo, 9, pacientes, indice)
+	elegirHorario(arreglo, 9, pacientes, indice,vacunas, stockVacunas, vacunasSelec)
 	
 FinSubProceso
 
 
-SubProceso elegirHorario(arreglo, filas, pacientes, indice Por Referencia)
+SubProceso elegirHorario(arreglo, filas, pacientes, indice Por Referencia, vacunas, stockVacunas Por Referencia, vacunasSelec Por Referencia)
 	Escribir "Elija el dia 1-5"
 	Leer dia
 	
@@ -178,7 +185,7 @@ SubProceso elegirHorario(arreglo, filas, pacientes, indice Por Referencia)
 		//mostrarHorarios(arreglo, 5, 9, pacientes, indice)
 	FinMientras
 	
-	cargarPaciente(dia, hora, pacientes, arreglo, indice)
+	cargarPaciente(dia, hora, pacientes, arreglo, indice,vacunas, stockVacunas, vacunasSelec)
 	
 	arreglo[dia - 1, hora] = "  Ocupado"
 
@@ -186,7 +193,7 @@ FinSubProceso
 
 
 
-SubProceso cargarPaciente(dia, hora, pacientes, arregloHorario, indice Por Referencia)
+SubProceso cargarPaciente(dia, hora, pacientes, arregloHorario, indice Por Referencia,vacunas, stockVacunas Por Referencia, vacunasSelec Por Referencia)
 	Definir nombre, apellido, dni, edad Como Cadena
 	
 		Escribir "Ingrese su nombre"
@@ -195,7 +202,7 @@ SubProceso cargarPaciente(dia, hora, pacientes, arregloHorario, indice Por Refer
 		Escribir "Ingrese su apellido"
 		Leer apellido
 		
-		nombreCompleto = nombre, " ", apellido
+		nombreCompleto = nombre + " " + apellido
 		pacientes[indice, 0] = nombreCompleto
 		
 		Escribir "Ingrese su dni"
@@ -206,8 +213,9 @@ SubProceso cargarPaciente(dia, hora, pacientes, arregloHorario, indice Por Refer
 		Leer edad
 		
 		pacientes[indice, 2] = edad
-		
-		pacientes[indice, 3] = "Vacuna"
+		mostrarVacuna(vacunas, stockVacunas,6)
+		elegirVacuna(vacunas, stockVacunas, entrada, vacunaSelec)
+		pacientes[indice, 3] = vacunaSelec
 		
 		pacientes[indice, 4] = arregloHorario[dia - 1, 0]
 		
@@ -217,4 +225,24 @@ SubProceso cargarPaciente(dia, hora, pacientes, arregloHorario, indice Por Refer
 		
 FinSubProceso
 
+SubProceso mostrarVacuna(vacunas, stockVacunas,filas)
+	Para i<- 0 Hasta filas-1 Hacer
+		si stockVacunas[i] > 0 Entonces
+			mostrar vacunas[i]
+		SiNo
+			mostrar vacunas[i] , "STOCK AGOTADO" 
+		FinSi
+		
+	Fin Para
+FinSubProceso
+SubProceso elegirVacuna(vacunas, stockVacunas Por Referencia, entrada, vacunaSelec Por Referencia)
+	Mostrar "Que vacuna desea: "
+	leer entrada
+	vacunaSelec = vacunas[entrada-1]
+	stockVacunas[entrada-1] = (stockVacunas[entrada-1])-1
+	
+
+	
+	
+FinSubProceso
 	
