@@ -50,7 +50,7 @@ Algoritmo sin_titulo
 	stockVacunas[5] = 10
 	
 	Dimension pacientes[5, 6]
-	Dimension pacientesPorEdad[5, 6]
+	Dimension pacientesOrdenados[5, 6]
 	
 	entrada = ""
 	
@@ -118,7 +118,7 @@ Algoritmo sin_titulo
 				
 				Escribir "Funcion ordenar y mostrar"
 				
-				ordenarYMostrar(pacientes, 5)
+				ordenarYMostrar(pacientes, 5, pacientesOrdenados)
 			
 				
 			"5":
@@ -253,7 +253,7 @@ SubProceso elegirVacuna(vacunas, stockVacunas Por Referencia, entrada, vacunaSel
 	stockVacunas[entrada-1] = (stockVacunas[entrada-1])-1
 FinSubProceso
 
-SubProceso ordenarYMostrar(array Por Referencia, filas)
+SubProceso ordenarYMostrar(array, filas, arrayOrdenado Por Referencia)
 	Definir orden Como Caracter
 	Repetir
 		Escribir "Ordenar y mostrar lista pacientes"
@@ -263,29 +263,44 @@ SubProceso ordenarYMostrar(array Por Referencia, filas)
 	Mientras Que orden<>"a" y orden<>"b"
 	
 	si orden="a" Entonces
-		ordenarLista(array, filas , 6, 2)
+		ordenarLista(array, filas , 6, 2, arrayOrdenado)
 	SiNo
-		ordenarLista(array, filas , 6, 3)
+		ordenarLista(array, filas , 6, 3, arrayOrdenado)
 	FinSi
 FinSubProceso
 
-SubProceso ordenarLista(array Por Referencia, filas, columnas, columnaAOrdenar)
-	Definir aux Como caracter; //cambiar el tipo de dato según el tipo de datos del array
+SubProceso ordenarLista(array, filas, columnas, columnaAOrdenar, arrayOrdenado Por Referencia)
+	Para i = 0 Hasta 4 Hacer
+		arrayOrdenado[i, 0] = array[i, 0]
+		para j = 1 hasta 5 Hacer
+			arrayOrdenado[i, j] = array[i, j]
+		FinPara
+	FinPara
+	
+	Definir aux, aux2 Como caracter; //cambiar el tipo de dato según el tipo de datos del array
 	Para i<-0 Hasta filas-2 Hacer //recorro las filas del array hasta la penultima
 		para k<-i+1 hasta filas-1 Hacer //recorro las filas del array hasta la última
 			si array[i,columnaAOrdenar] > array[k,columnaAOrdenar] Entonces
 				Para j<-0 Hasta columnas-1 Hacer //recorro las columnas del array
 					aux <- array[i,j];
+					aux2 = arrayOrdenado[i, j] 
+					
 					array[i,j] <- array[k,j]; 
+					arrayOrdenado[i, j] = array[k, j]
+					
 					array[k,j] <- aux; 
+					arrayOrdenado[k, j] = aux2
+					
 				Fin Para
 			FinSi
 		FinPara
 	FinPara
 	
+	
+	
 	Para i = 0 Hasta 4 Hacer
 		para j = 0 hasta 5 Hacer
-			Mostrar array[i, j]
+			Mostrar arrayOrdenado[i, j]
 		FinPara
 	FinPara
 FinSubProceso
