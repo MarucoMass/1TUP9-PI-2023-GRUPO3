@@ -3,7 +3,7 @@ Algoritmo sin_titulo
 	Definir opcionS, stockVacunas, indice Como Entero
 	indice = 0
 
-	Definir entrada, entradaMayu, turnosHorarios, horarios, vacunas, pacientes Como Caracter
+	Definir entrada, entradaMayu, turnosHorarios, horarios, vacunas, pacientes, pacientesPorEdad Como Caracter
 	
 	// array con las horas
     Dimension horarios[8]
@@ -49,7 +49,8 @@ Algoritmo sin_titulo
 	stockVacunas[4] = 10
 	stockVacunas[5] = 10
 	
-	Dimension pacientes[50, 6]
+	Dimension pacientes[5, 6]
+	Dimension pacientesPorEdad[5, 6]
 	
 	entrada = ""
 	
@@ -117,7 +118,8 @@ Algoritmo sin_titulo
 				
 				Escribir "Funcion ordenar y mostrar"
 				
-				//Funcion ordenar y mostrar
+				ordenarYMostrar(pacientes, 5)
+			
 				
 			"5":
 				
@@ -194,7 +196,7 @@ SubProceso elegirHorario(arreglo, filas, pacientes, indice Por Referencia, vacun
 		//mostrarHorarios(arreglo, 5, 9, pacientes, indice)
 	FinMientras
 	
-	cargarPaciente(dia, hora, pacientes, arreglo, indice,vacunas, stockVacunas, vacunasSelec)
+	cargarPaciente(dia, hora, pacientes, arreglo, indice, vacunas, stockVacunas, vacunasSelec)
 	
 	arreglo[dia - 1, hora] = "  Ocupado"
 
@@ -239,19 +241,51 @@ SubProceso mostrarVacuna(vacunas, stockVacunas,filas)
 		si stockVacunas[i] > 0 Entonces
 			mostrar vacunas[i]
 		SiNo
-			mostrar vacunas[i] , "STOCK AGOTADO" 
+			mostrar vacunas[i] , " - STOCK AGOTADO" 
 		FinSi
-		
 	Fin Para
 FinSubProceso
+
 SubProceso elegirVacuna(vacunas, stockVacunas Por Referencia, entrada, vacunaSelec Por Referencia)
 	Mostrar "Que vacuna desea: "
 	leer entrada
 	vacunaSelec = vacunas[entrada-1]
 	stockVacunas[entrada-1] = (stockVacunas[entrada-1])-1
-	
-
-	
-	
 FinSubProceso
+
+SubProceso ordenarYMostrar(array Por Referencia, filas)
+	Definir orden Como Caracter
+	Repetir
+		Escribir "Ordenar y mostrar lista pacientes"
+		Escribir "   a. Por edad"
+		Escribir "   b. Por vacuna a aplicar"
+		Leer orden
+	Mientras Que orden<>"a" y orden<>"b"
 	
+	si orden="a" Entonces
+		ordenarLista(array, filas , 6, 2)
+	SiNo
+		ordenarLista(array, filas , 6, 3)
+	FinSi
+FinSubProceso
+
+SubProceso ordenarLista(array Por Referencia, filas, columnas, columnaAOrdenar)
+	Definir aux Como caracter; //cambiar el tipo de dato según el tipo de datos del array
+	Para i<-0 Hasta filas-2 Hacer //recorro las filas del array hasta la penultima
+		para k<-i+1 hasta filas-1 Hacer //recorro las filas del array hasta la última
+			si array[i,columnaAOrdenar] > array[k,columnaAOrdenar] Entonces
+				Para j<-0 Hasta columnas-1 Hacer //recorro las columnas del array
+					aux <- array[i,j];
+					array[i,j] <- array[k,j]; 
+					array[k,j] <- aux; 
+				Fin Para
+			FinSi
+		FinPara
+	FinPara
+	
+	Para i = 0 Hasta 4 Hacer
+		para j = 0 hasta 5 Hacer
+			Mostrar array[i, j]
+		FinPara
+	FinPara
+FinSubProceso
