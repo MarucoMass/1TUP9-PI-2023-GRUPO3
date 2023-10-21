@@ -1,9 +1,9 @@
 Algoritmo sin_titulo
 	
-	Definir opcionS Como Entero
-	
+	Definir opcionS, stockVacunas, indice Como Entero
+	indice = 0
 
-	Definir entrada, entradaMayu, turnosHorarios, horarios Como Caracter
+	Definir entrada, entradaMayu, turnosHorarios, horarios, vacunas, pacientes Como Caracter
 	
 	// array con las horas
 	Dimension horarios[8]
@@ -30,6 +30,26 @@ Algoritmo sin_titulo
 			turnosHorarios[i,j + 1] = horarios[j]
 		FinPara
 	FinPara
+	
+	// array de vacunas
+	Dimension vacunas[6]
+	vacunas[0] = "Neumococo conjugada"
+	vacunas[1] = "Poliomielitis (IPV o Salk)"
+	vacunas[2] = "Quíntuple (o pentavalente)"
+	vacunas[3] = "Rotavirus"
+	vacunas[4] = "Meningococo"
+	vacunas[5] = "Tripe Viral"
+	
+	// array del stock cuyo indice corresponde al del arrays de vacunas
+	Dimension stockVacunas[6]
+	stockVacunas[0] = 10
+	stockVacunas[1] = 10
+	stockVacunas[2] = 10
+	stockVacunas[3] = 10
+	stockVacunas[4] = 10
+	stockVacunas[5] = 10
+	
+	Dimension pacientes[50, 6]
 	
 	entrada = ""
 	
@@ -72,11 +92,20 @@ Algoritmo sin_titulo
 		Segun entrada Hacer
 			
 			"1":
-				
 				Escribir "Funcion reservar"
 				
-				mostrarHorarios(turnosHorarios, 5, 9)
-				
+				mostrarHorarios(turnosHorarios, 5, 9, pacientes)
+				//Para i = 0 Hasta 5 Hacer
+					//para j = 0 hasta 5
+						//Mostrar pacientes[i, j]
+					//FinPara
+				//FinPara
+				mostrar pacientes[0, 0]
+				mostrar pacientes[0, 1]
+				mostrar pacientes[0, 2]
+				mostrar pacientes[0, 3]
+				mostrar pacientes[0, 4]
+				mostrar pacientes[0, 5]
 			"2":
 				
 				Escribir "Funcion buscar"
@@ -111,7 +140,7 @@ FinAlgoritmo
 
 
 
-SubProceso mostrarHorarios(arreglo, filas, columnas)
+SubProceso mostrarHorarios(arreglo, filas, columnas, pacientes)
 	Para i = 0 Hasta filas - 1
 		Mostrar arreglo[i, 0] , ":"
 		Para j = 1 hasta columnas - 1
@@ -121,12 +150,12 @@ SubProceso mostrarHorarios(arreglo, filas, columnas)
 	
 	// mando a llamar este subproceso aca para que una vez que muestre los dias se ejecute la eleccion del horario
 	//tambien por si elige un dia "ocupado" asi vuelve para atras y elige otro dia
-	elegirHorario(arreglo, 9)
+	elegirHorario(arreglo, 9, pacientes)
 	
 FinSubProceso
 
 
-SubProceso elegirHorario(arreglo, filas)
+SubProceso elegirHorario(arreglo, filas, pacientes)
 	Escribir "Elija el dia 1-5"
 	Leer dia
 	
@@ -148,13 +177,46 @@ SubProceso elegirHorario(arreglo, filas)
 	FinMientras
 	
 	// Aca si elige un dia que esta "ocupado" manda a llamar al subproceso que muestra los dias
-	Si arreglo[dia - 1, hora] = "Ocupado"
+	Si arreglo[dia - 1, hora] = "  Ocupado"
 		Escribir "Elija otro horario por favor. Ese ya está ocupado"
-		mostrarHorarios(arreglo, 5, 9)
+		mostrarHorarios(arreglo, 5, 9, pacientes)
 	FinSi
 	
-	arreglo[dia - 1, hora] = "Ocupado"
+	cargarPaciente(indice, dia, hora, pacientes)
+	indice = indice + 1
+	arreglo[dia - 1, hora] = "  Ocupado"
 
+FinSubProceso
+
+
+
+SubProceso cargarPaciente(index, dia, hora, pacientes)
+	Definir nombre, apellido, dni, edad Como Caracter
+	
+		Escribir "Ingrese su nombre"
+		Leer nombre
+		
+		Escribir "Ingrese su apellido"
+		Leer apellido
+		
+		nombreCompleto = Concatenar(nombre, apellido)
+		pacientes[index, 0] = nombreCompleto
+		
+		Escribir "Ingrese su dni"
+		Leer dni
+		pacientes[0, 1] = dni
+		
+		Escribir "Ingrese su edad"
+		Leer edad
+		pacientes[0, 2] = edad
+		
+		pacientes[0, 3] = edad
+		
+		pacientes[0, 4] = ConvertirATexto(dia)
+		
+		pacientes[0, 5] = ConvertirATexto(hora)
+	
+		
 FinSubProceso
 
 	
