@@ -94,18 +94,13 @@ Algoritmo sin_titulo
 			"1":
 				Escribir "Funcion reservar"
 				
-				mostrarHorarios(turnosHorarios, 5, 9, pacientes)
-				//Para i = 0 Hasta 5 Hacer
-					//para j = 0 hasta 5
-						//Mostrar pacientes[i, j]
-					//FinPara
-				//FinPara
-				mostrar pacientes[0, 0]
-				mostrar pacientes[0, 1]
-				mostrar pacientes[0, 2]
-				mostrar pacientes[0, 3]
-				mostrar pacientes[0, 4]
-				mostrar pacientes[0, 5]
+				mostrarHorarios(turnosHorarios, 5, 9, pacientes,indice)
+				indice = indice + 1
+				Para i = 0 Hasta 5 Hacer
+					para j = 0 hasta 5 Hacer
+						Mostrar pacientes[i, j]
+					FinPara
+				FinPara
 			"2":
 				
 				Escribir "Funcion buscar"
@@ -140,7 +135,7 @@ FinAlgoritmo
 
 
 
-SubProceso mostrarHorarios(arreglo, filas, columnas, pacientes)
+SubProceso mostrarHorarios(arreglo, filas, columnas, pacientes, indice)
 	Para i = 0 Hasta filas - 1
 		Mostrar arreglo[i, 0] , ":"
 		Para j = 1 hasta columnas - 1
@@ -150,12 +145,12 @@ SubProceso mostrarHorarios(arreglo, filas, columnas, pacientes)
 	
 	// mando a llamar este subproceso aca para que una vez que muestre los dias se ejecute la eleccion del horario
 	//tambien por si elige un dia "ocupado" asi vuelve para atras y elige otro dia
-	elegirHorario(arreglo, 9, pacientes)
+	elegirHorario(arreglo, 9, pacientes, indice)
 	
 FinSubProceso
 
 
-SubProceso elegirHorario(arreglo, filas, pacientes)
+SubProceso elegirHorario(arreglo, filas, pacientes, indice)
 	Escribir "Elija el dia 1-5"
 	Leer dia
 	
@@ -179,18 +174,18 @@ SubProceso elegirHorario(arreglo, filas, pacientes)
 	// Aca si elige un dia que esta "ocupado" manda a llamar al subproceso que muestra los dias
 	Si arreglo[dia - 1, hora] = "  Ocupado"
 		Escribir "Elija otro horario por favor. Ese ya está ocupado"
-		mostrarHorarios(arreglo, 5, 9, pacientes)
+		mostrarHorarios(arreglo, 5, 9, pacientes, indice)
 	FinSi
 	
-	cargarPaciente(indice, dia, hora, pacientes)
-	indice = indice + 1
+	cargarPaciente(dia, hora, pacientes, arreglo, indice)
+	
 	arreglo[dia - 1, hora] = "  Ocupado"
 
 FinSubProceso
 
 
 
-SubProceso cargarPaciente(index, dia, hora, pacientes)
+SubProceso cargarPaciente(dia, hora, pacientes, arregloHorario, indice)
 	Definir nombre, apellido, dni, edad Como Caracter
 	
 		Escribir "Ingrese su nombre"
@@ -200,22 +195,22 @@ SubProceso cargarPaciente(index, dia, hora, pacientes)
 		Leer apellido
 		
 		nombreCompleto = Concatenar(nombre, apellido)
-		pacientes[index, 0] = nombreCompleto
+		pacientes[indice, 0] = apellido
 		
 		Escribir "Ingrese su dni"
 		Leer dni
-		pacientes[0, 1] = dni
+		pacientes[indice, 1] = dni
 		
 		Escribir "Ingrese su edad"
 		Leer edad
-		pacientes[0, 2] = edad
 		
-		pacientes[0, 3] = edad
+		pacientes[indice, 2] = edad
 		
-		pacientes[0, 4] = ConvertirATexto(dia)
+		pacientes[indice, 3] = nombre
 		
-		pacientes[0, 5] = ConvertirATexto(hora)
-	
+		pacientes[indice, 4] = arregloHorario[dia,0]
+		
+		pacientes[indice, 5] = arregloHorario[dia,hora]
 		
 FinSubProceso
 
