@@ -95,8 +95,8 @@ Algoritmo sin_titulo
 				Escribir "Funcion reservar"
 				
 				mostrarHorarios(turnosHorarios, 5, 9, pacientes,indice)
-				indice = indice + 1
-				Para i = 0 Hasta 5 Hacer
+				
+				Para i = 0 Hasta indice - 1 Hacer
 					para j = 0 hasta 5 Hacer
 						Mostrar pacientes[i, j]
 					FinPara
@@ -135,7 +135,7 @@ FinAlgoritmo
 
 
 
-SubProceso mostrarHorarios(arreglo, filas, columnas, pacientes, indice)
+SubProceso mostrarHorarios(arreglo, filas, columnas, pacientes, indice Por Referencia)
 	Para i = 0 Hasta filas - 1
 		Mostrar arreglo[i, 0] , ":"
 		Para j = 1 hasta columnas - 1
@@ -150,7 +150,7 @@ SubProceso mostrarHorarios(arreglo, filas, columnas, pacientes, indice)
 FinSubProceso
 
 
-SubProceso elegirHorario(arreglo, filas, pacientes, indice)
+SubProceso elegirHorario(arreglo, filas, pacientes, indice Por Referencia)
 	Escribir "Elija el dia 1-5"
 	Leer dia
 	
@@ -172,10 +172,11 @@ SubProceso elegirHorario(arreglo, filas, pacientes, indice)
 	FinMientras
 	
 	// Aca si elige un dia que esta "ocupado" manda a llamar al subproceso que muestra los dias
-	Si arreglo[dia - 1, hora] = "  Ocupado"
+	Mientras arreglo[dia - 1, hora] = "  Ocupado"
 		Escribir "Elija otro horario por favor. Ese ya está ocupado"
-		mostrarHorarios(arreglo, 5, 9, pacientes, indice)
-	FinSi
+		Leer hora
+		//mostrarHorarios(arreglo, 5, 9, pacientes, indice)
+	FinMientras
 	
 	cargarPaciente(dia, hora, pacientes, arreglo, indice)
 	
@@ -185,8 +186,8 @@ FinSubProceso
 
 
 
-SubProceso cargarPaciente(dia, hora, pacientes, arregloHorario, indice)
-	Definir nombre, apellido, dni, edad Como Caracter
+SubProceso cargarPaciente(dia, hora, pacientes, arregloHorario, indice Por Referencia)
+	Definir nombre, apellido, dni, edad Como Cadena
 	
 		Escribir "Ingrese su nombre"
 		Leer nombre
@@ -194,8 +195,8 @@ SubProceso cargarPaciente(dia, hora, pacientes, arregloHorario, indice)
 		Escribir "Ingrese su apellido"
 		Leer apellido
 		
-		nombreCompleto = Concatenar(nombre, apellido)
-		pacientes[indice, 0] = apellido
+		nombreCompleto = nombre, " ", apellido
+		pacientes[indice, 0] = nombreCompleto
 		
 		Escribir "Ingrese su dni"
 		Leer dni
@@ -206,11 +207,13 @@ SubProceso cargarPaciente(dia, hora, pacientes, arregloHorario, indice)
 		
 		pacientes[indice, 2] = edad
 		
-		pacientes[indice, 3] = nombre
+		pacientes[indice, 3] = "Vacuna"
 		
-		pacientes[indice, 4] = arregloHorario[dia,0]
+		pacientes[indice, 4] = arregloHorario[dia - 1, 0]
 		
-		pacientes[indice, 5] = arregloHorario[dia,hora]
+		pacientes[indice, 5] = arregloHorario[dia  - 1,hora]
+		
+		indice = indice + 1
 		
 FinSubProceso
 
