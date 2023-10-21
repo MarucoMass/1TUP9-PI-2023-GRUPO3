@@ -6,15 +6,15 @@ Algoritmo sin_titulo
 	Definir entrada, entradaMayu, turnosHorarios, horarios, vacunas, pacientes Como Caracter
 	
 	// array con las horas
-	Dimension horarios[8]
-	horarios[0] = "  1- 08:00"
-	horarios[1] = "  2- 08:30"
-	horarios[2] = "  3- 09:00"
-	horarios[3] = "  4- 09:30"
-	horarios[4] = "  5- 10:00"
-	horarios[5] = "  6- 10:30"
-	horarios[6] = "  7- 11:00"
-	horarios[7] = "  8- 11:30"
+    Dimension horarios[8]
+    horarios[0] = "  1- 08:00"
+    horarios[1] = "  2- 08:30"
+    horarios[2] = "  3- 09:00"
+    horarios[3] = "  4- 09:30"
+    horarios[4] = "  5- 10:00"
+    horarios[5] = "  6- 10:30"
+    horarios[6] = "  7- 11:00"
+    horarios[7] = "  8- 11:30"
 	
 	// array con los dias
 	Dimension turnosHorarios[5, 9]
@@ -42,7 +42,7 @@ Algoritmo sin_titulo
 	
 	// array del stock cuyo indice corresponde al del arrays de vacunas
 	Dimension stockVacunas[6]
-	stockVacunas[0] = 1
+	stockVacunas[0] = 10
 	stockVacunas[1] = 10
 	stockVacunas[2] = 10
 	stockVacunas[3] = 10
@@ -137,16 +137,20 @@ FinAlgoritmo
 
 SubProceso mostrarHorarios(arreglo, filas, columnas, pacientes, indice Por Referencia,vacunas , stockVacunas Por Referencia, vacunasSelec Por Referencia)
 	Para i = 0 Hasta filas - 1
-		Mostrar arreglo[i, 0], ":"
-		TodasOcupadas = Verdadero 
+		contador = 0
+		todasLibres = Verdadero 
 		Para j = 1 hasta columnas - 1
-			Si arreglo[i, j] <> "  Ocupado" Entonces
-				TodasOcupadas = Falso
-				
+			Si arreglo[i, j] == "  Ocupado" Entonces
+				contador = contador + 1
 			FinSi
 		FinPara
-		Si TodasOcupadas Entonces
-			arreglo[i, 0] = "No hay turnos disponibles para este día"
+		Si contador == columnas - 1 Entonces
+			todasLibres = Falso
+		FinSi
+		Si todasLibres Entonces
+			Mostrar arreglo[i, 0]
+		SiNo
+			Mostrar "No hay turnos disponibles para este día"
 		FinSi
 	FinPara
 	
@@ -165,6 +169,11 @@ SubProceso elegirHorario(arreglo, filas, pacientes, indice Por Referencia, vacun
 		Escribir "Error: elija el dia 1-5"
 		Leer dia
 	FinMientras
+	
+	//Si arreglo[dia - 1,0] == "No hay turnos disponibles para este día" Entonces
+		//Mostrar "Error elija otro dia:"
+		//mostrarHorarios(arreglo, filas, columnas, pacientes, indice,vacunas , stockVacunas, vacunasSelec)
+	//FinSi
 	
 	Para i = 0 hasta filas - 1
 		Mostrar arreglo[dia - 1, i]
