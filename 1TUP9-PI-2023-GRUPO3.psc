@@ -1,10 +1,11 @@
 Algoritmo sin_titulo
 	
-	Definir opcionS, stockVacunas, indice Como Entero
+	Definir opcionS, stockVacunas, indice, contadorDias, contadorVacunas Como Entero
 	indice = 0
 
 	Definir entrada, entradaMayu, turnosHorarios, horarios, vacunas, pacientes, pacientesPorEdad Como Caracter
-	
+	Dimension contadorDias[5]
+	Dimension contadorVacunas[6]
 	// array con las horas
     Dimension horarios[8]
     horarios[0] = "  1- 08:00"
@@ -106,26 +107,26 @@ Algoritmo sin_titulo
 				
 				Escribir "Funcion buscar"
 				
-				//Funcion buscar
+				buscarPaciente(pacientes)
 				
 			"3":
 				
 				Escribir "Funcion ver agenda"
 				
-				//Funcion ver agenda
+				mostrarAgenda(turnosHorarios,5,9)
 				
 			"4":
 				
 				Escribir "Funcion ordenar y mostrar"
 				
-				ordenarYMostrar(pacientes, 5, pacientesOrdenados)
+				ordenarYMostrar(pacientes, 5)
 			
 				
 			"5":
 				
 				Escribir "Funcion listado"
 				
-				//Funcion listado
+				contadorDia(turnosHorarios, contadorDias, 5, 9)
 				
 		Fin Segun
 		
@@ -166,7 +167,6 @@ FinSubProceso
 SubProceso elegirHorario(arreglo, filas, pacientes, indice Por Referencia, vacunas, stockVacunas Por Referencia, vacunasSelec Por Referencia)
 	Escribir "Elija el dia 1-5"
 	Leer dia
-	
 	Mientras dia < 1 o dia > 5
 		Escribir "Error: elija el dia 1-5"
 		Leer dia
@@ -253,7 +253,7 @@ SubProceso elegirVacuna(vacunas, stockVacunas Por Referencia, entrada, vacunaSel
 	stockVacunas[entrada-1] = (stockVacunas[entrada-1])-1
 FinSubProceso
 
-SubProceso ordenarYMostrar(array, filas, arrayOrdenado Por Referencia)
+SubProceso ordenarYMostrar(array, filas)
 	Definir orden Como Caracter
 	Repetir
 		Escribir "Ordenar y mostrar lista pacientes"
@@ -263,19 +263,19 @@ SubProceso ordenarYMostrar(array, filas, arrayOrdenado Por Referencia)
 	Mientras Que orden<>"a" y orden<>"b"
 	
 	si orden="a" Entonces
-		ordenarLista(array, filas , 6, 2, arrayOrdenado)
+		ordenarLista(array, filas , 6, 2)
 	SiNo
-		ordenarLista(array, filas , 6, 3, arrayOrdenado)
+		ordenarLista(array, filas , 6, 3)
 	FinSi
 FinSubProceso
 
-SubProceso ordenarLista(array, filas, columnas, columnaAOrdenar, arrayOrdenado Por Referencia)
-	Para i = 0 Hasta 4 Hacer
-		arrayOrdenado[i, 0] = array[i, 0]
-		para j = 1 hasta 5 Hacer
-			arrayOrdenado[i, j] = array[i, j]
-		FinPara
-	FinPara
+SubProceso ordenarLista(array, filas, columnas, columnaAOrdenar)
+	//Para i = 0 Hasta 4 Hacer
+		//arrayOrdenado[i, 0] = array[i, 0]
+		//para j = 1 hasta 5 Hacer
+			//arrayOrdenado[i, j] = array[i, j]
+		//FinPara
+	//FinPara
 	
 	Definir aux, aux2 Como caracter; //cambiar el tipo de dato según el tipo de datos del array
 	Para i<-0 Hasta filas-2 Hacer //recorro las filas del array hasta la penultima
@@ -283,13 +283,13 @@ SubProceso ordenarLista(array, filas, columnas, columnaAOrdenar, arrayOrdenado P
 			si array[i,columnaAOrdenar] > array[k,columnaAOrdenar] Entonces
 				Para j<-0 Hasta columnas-1 Hacer //recorro las columnas del array
 					aux <- array[i,j];
-					aux2 = arrayOrdenado[i, j] 
+					//aux2 = arrayOrdenado[i, j] 
 					
 					array[i,j] <- array[k,j]; 
-					arrayOrdenado[i, j] = array[k, j]
+					//arrayOrdenado[i, j] = array[k, j]
 					
 					array[k,j] <- aux; 
-					arrayOrdenado[k, j] = aux2
+					//arrayOrdenado[k, j] = aux2
 					
 				Fin Para
 			FinSi
@@ -300,7 +300,40 @@ SubProceso ordenarLista(array, filas, columnas, columnaAOrdenar, arrayOrdenado P
 	
 	Para i = 0 Hasta 4 Hacer
 		para j = 0 hasta 5 Hacer
-			Mostrar arrayOrdenado[i, j]
+			Mostrar array[i, j]
 		FinPara
 	FinPara
 FinSubProceso
+
+SubProceso buscarPaciente(array) 
+	Mostrar"Ingrese su dni:"
+	Leer dni
+	Para i<-0 Hasta array-1  Hacer
+		Si array[i,1] = dni Entonces
+			Para j<-0 Hasta 5 Hacer
+				Mostrar array[i,j]
+			Fin Para
+		FinSi
+	Fin Para
+FinSubProceso
+SubProceso mostrarAgenda(array,filas,columnas)
+	
+	Para i<-0 Hasta filas-1  Hacer
+		Mostrar array[i,0]
+		Para j<-1 Hasta columnas-1 Hacer
+			mostrar array[i,j]
+		Fin Para
+	Fin Para
+FinSubProceso
+SubProceso contadorDia(array1, array2, filas, columnas)
+	Para i<-0 Hasta filas-1  Hacer
+		Para j<-1 Hasta columnas-1 Hacer
+			Si array1[i, j] == "  Ocupado" Entonces
+				array2[i] = 1+array2[i]
+			FinSi
+			
+		Fin Para
+		Mostrar "La cantidad de turnos para el ", array1[i,0] , " es de: ", array2[i]
+	Fin Para
+FinSubProceso
+	
