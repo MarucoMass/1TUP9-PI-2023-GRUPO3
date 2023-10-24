@@ -4,7 +4,6 @@ Algoritmo sin_titulo
 	Definir entrada, entradaMayu, turnosHorarios, horarios, vacunas, pacientes Como Caracter
 	indice = 0
 
-
 	// array con las horas
     Dimension horarios[8]
     horarios[0] = "08:00"
@@ -195,7 +194,7 @@ FinSubProceso
 
 
 
-SubProceso cargarPaciente(dia, hora, pacientes, arregloHorario, indice Por Referencia,vacunas, stockVacunas Por Referencia, vacunasSelec Por Referencia)
+SubProceso cargarPaciente(dia, hora, pacientes, arregloHorario, indice Por Referencia, vacunas, stockVacunas Por Referencia, vacunasSelec Por Referencia)
 	Definir nombre, apellido, dni, edad Como Cadena
 	
 		Escribir "Ingrese su nombre"
