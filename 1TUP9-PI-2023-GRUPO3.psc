@@ -1,29 +1,28 @@
 Algoritmo sin_titulo
 	
-	Definir opcionS, stockVacunas, indice, contadorDias, contadorVacunas Como Entero
+	Definir opcionS, stockVacunas, indice Como Entero
+	Definir entrada, entradaMayu, turnosHorarios, horarios, vacunas, pacientes Como Caracter
 	indice = 0
 
-	Definir entrada, entradaMayu, turnosHorarios, horarios, vacunas, pacientes, pacientesPorEdad Como Caracter
-	Dimension contadorDias[5]
-	Dimension contadorVacunas[6]
+
 	// array con las horas
     Dimension horarios[8]
-    horarios[0] = "  1- 08:00"
-    horarios[1] = "  2- 08:30"
-    horarios[2] = "  3- 09:00"
-    horarios[3] = "  4- 09:30"
-    horarios[4] = "  5- 10:00"
-    horarios[5] = "  6- 10:30"
-    horarios[6] = "  7- 11:00"
-    horarios[7] = "  8- 11:30"
+    horarios[0] = "08:00"
+    horarios[1] = "08:30"
+    horarios[2] = "09:00"
+    horarios[3] = "09:30"
+    horarios[4] = "10:00"
+    horarios[5] = "10:30"
+    horarios[6] = "11:00"
+    horarios[7] = "11:30"
 	
 	// array con los dias
 	Dimension turnosHorarios[5, 9]
-	turnosHorarios[0,0] = "1. Lunes"
-	turnosHorarios[1,0] = "2. Martes"
-	turnosHorarios[2,0] = "3. Miércoles"
-	turnosHorarios[3,0] = "4. Jueves"
-	turnosHorarios[4,0] = "5. Viernes"
+	turnosHorarios[0,0] = "Lunes"
+	turnosHorarios[1,0] = "Martes"
+	turnosHorarios[2,0] = "Miércoles"
+	turnosHorarios[3,0] = "Jueves"
+	turnosHorarios[4,0] = "Viernes"
 	
 	// ciclo para cargar el arreglo de los horarios
 	Para i = 0 Hasta 4 
@@ -34,12 +33,12 @@ Algoritmo sin_titulo
 	
 	// array de vacunas
 	Dimension vacunas[6]
-	vacunas[0] = "1-Neumococo conjugada"
-	vacunas[1] = "2-Poliomielitis (IPV o Salk)"
-	vacunas[2] = "3-Quíntuple (o pentavalente)"
-	vacunas[3] = "4-Rotavirus"
-	vacunas[4] = "5-Meningococo"
-	vacunas[5] = "6-Tripe Viral"
+	vacunas[0] = "Neumococo conjugada"
+	vacunas[1] = "Poliomielitis (IPV o Salk)"
+	vacunas[2] = "Quíntuple (o pentavalente)"
+	vacunas[3] = "Rotavirus"
+	vacunas[4] = "Meningococo"
+	vacunas[5] = "Tripe Viral"
 	
 	// array del stock cuyo indice corresponde al del arrays de vacunas
 	Dimension stockVacunas[6]
@@ -76,7 +75,7 @@ Algoritmo sin_titulo
 		Escribir "   b. Cantidad de vacunas a aplicar por vacuna"
 		
 		
-		Escribir "Ingrese un numero(o SALIR)"
+		Escribir "Ingrese un numero (o SALIR)"
 		
 		Leer entrada
 		entradaMayu = Mayusculas(entrada)
@@ -95,38 +94,28 @@ Algoritmo sin_titulo
 			
 			"1":
 				Escribir "Funcion reservar"
-				
 				mostrarHorarios(turnosHorarios, 5, 9, pacientes,indice, vacunas, stockVacunas, vacunasSelec)
 				
-				//Para i = 0 Hasta indice - 1 Hacer
-					//para j = 0 hasta 5 Hacer
-						//Mostrar pacientes[i, j]
-					//FinPara
-				//FinPara
 			"2":
 				
 				Escribir "Funcion buscar"
-				
 				buscarPaciente(pacientes)
 				
 			"3":
 				
 				Escribir "Funcion ver agenda"
-				
 				mostrarAgenda(turnosHorarios,5,9)
 				
 			"4":
 				
 				Escribir "Funcion ordenar y mostrar"
-				
 				ordenarYMostrar(pacientes, 5)
 			
 				
 			"5":
 				
 				Escribir "Funcion listado"
-				
-				contadorDia(turnosHorarios, contadorDias, 5, 9)
+				mostrarContadores(pacientes, 5)
 				
 		Fin Segun
 		
@@ -151,7 +140,7 @@ SubProceso mostrarHorarios(arreglo, filas, columnas, pacientes, indice Por Refer
 			todasLibres = Falso
 		FinSi
 		Si todasLibres Entonces
-			Mostrar arreglo[i, 0]
+			Mostrar i + 1, " - ", arreglo[i, 0]
 		SiNo
 			Mostrar "No hay turnos disponibles para este día"
 		FinSi
@@ -172,13 +161,15 @@ SubProceso elegirHorario(arreglo, filas, pacientes, indice Por Referencia, vacun
 		Leer dia
 	FinMientras
 	
-	//Si arreglo[dia - 1,0] == "No hay turnos disponibles para este día" Entonces
-		//Mostrar "Error elija otro dia:"
-		//mostrarHorarios(arreglo, filas, columnas, pacientes, indice,vacunas , stockVacunas, vacunasSelec)
-	//FinSi
+	//Para i = 0 hasta filas - 1
+		//Mostrar arreglo[dia - 1, i]
+	//FinPara
 	
-	Para i = 0 hasta filas - 1
-		Mostrar arreglo[dia - 1, i]
+	Para i = dia - 1 Hasta dia - 1 Hacer
+		Mostrar arreglo[dia - 1, 0], ":"
+		para j = 1 hasta 7 Hacer
+			Mostrar "  ", j, " - ", arreglo[dia - 1, j]
+		FinPara
 	FinPara
 	
 	Escribir "Elija la hora 1-8"
@@ -239,16 +230,16 @@ FinSubProceso
 SubProceso mostrarVacuna(vacunas, stockVacunas,filas)
 	Para i<- 0 Hasta filas-1 Hacer
 		si stockVacunas[i] > 0 Entonces
-			mostrar vacunas[i]
+			mostrar i + 1, " - ", vacunas[i]
 		SiNo
-			mostrar vacunas[i] , " - STOCK AGOTADO" 
+			mostrar i + 1, " - ", vacunas[i] , " - STOCK AGOTADO" 
 		FinSi
 	Fin Para
 FinSubProceso
 
 SubProceso elegirVacuna(vacunas, stockVacunas Por Referencia, entrada, vacunaSelec Por Referencia)
 	Mostrar "Que vacuna desea: "
-	leer entrada
+	Leer entrada
 	vacunaSelec = vacunas[entrada-1]
 	stockVacunas[entrada-1] = (stockVacunas[entrada-1])-1
 FinSubProceso
@@ -296,8 +287,6 @@ SubProceso ordenarLista(array, filas, columnas, columnaAOrdenar)
 		FinPara
 	FinPara
 	
-	
-	
 	Para i = 0 Hasta 4 Hacer
 		para j = 0 hasta 5 Hacer
 			Mostrar array[i, j]
@@ -316,8 +305,8 @@ SubProceso buscarPaciente(array)
 		FinSi
 	Fin Para
 FinSubProceso
+
 SubProceso mostrarAgenda(array,filas,columnas)
-	
 	Para i<-0 Hasta filas-1  Hacer
 		Mostrar array[i,0]
 		Para j<-1 Hasta columnas-1 Hacer
@@ -325,15 +314,75 @@ SubProceso mostrarAgenda(array,filas,columnas)
 		Fin Para
 	Fin Para
 FinSubProceso
-SubProceso contadorDia(array1, array2, filas, columnas)
+
+SubProceso mostrarContadores(array, filas)
+	Definir orden Como Caracter
+	Repetir
+		Escribir "Listado/s"
+		Escribir "   a. Cantidad turnos otorgados por día"
+		Escribir "   b. Cantidad de vacunas a aplicar por vacuna"
+		Leer orden
+	Mientras Que orden<>"a" y orden<>"b"
+	
+	Si orden="a" Entonces
+		contadorDeDias(array, filas, 4)
+	SiNo
+		contadorDeVacunas(array, filas, 3)
+	FinSi
+FinSubProceso
+
+SubProceso contadorDeDias(array, filas, columnaElegida)
+	Definir contador1, contador2, contador3, contador4, contador5 Como Entero
 	Para i<-0 Hasta filas-1  Hacer
-		Para j<-1 Hasta columnas-1 Hacer
-			Si array1[i, j] == "  Ocupado" Entonces
-				array2[i] = 1+array2[i]
-			FinSi
-			
+		Para j<-columnaElegida Hasta columnaElegida Hacer
+			Segun array[i, j] Hacer
+				"Lunes":
+					contador1 = contador1 + 1
+				"Martes":
+					contador2 = contador2 + 1
+				"Miércoles":
+					contador3 = contador3 + 1
+				"Jueves":
+					contador4 = contador4 + 1
+				"Viernes":
+					contador5 = contador5 + 1
+				De Otro Modo:
+			Fin Segun
 		Fin Para
-		Mostrar "La cantidad de turnos para el ", array1[i,0] , " es de: ", array2[i]
 	Fin Para
+	Mostrar "La cantidad de turnos para el Lunes es de: ", contador1
+	Mostrar "La cantidad de turnos para el Martes es de: ", contador2
+	Mostrar "La cantidad de turnos para el Miercoles es de: ", contador3
+	Mostrar "La cantidad de turnos para el Jueves es de: ", contador4
+	Mostrar "La cantidad de turnos para el Viernes es de: ", contador5
+FinSubProceso
+
+SubProceso contadorDeVacunas(array, filas, columnaElegida)
+	Definir contador1, contador2, contador3, contador4, contador5, contador6 Como Entero
+	Para i<-0 Hasta filas-1  Hacer
+		Para j<-columnaElegida Hasta columnaElegida Hacer
+			Segun array[i, j] Hacer
+				"Neumococo conjugada":
+					contador1 = contador1 + 1
+				"Poliomielitis (IPV o Salk)":
+					contador2 = contador2 + 1
+				"Quíntuple (o pentavalente)":
+					contador3 = contador3 + 1
+				"Rotavirus":
+					contador4 = contador4 + 1
+				"Meningococo":
+					contador5 = contador5 + 1
+				"Tripe Viral":
+					contador6 = contador6 + 1
+				De Otro Modo:
+			Fin Segun
+		Fin Para
+	Fin Para
+	Mostrar "La cantidad de vacunas a aplicar para  Neumococo conjugada es de: ", contador1
+	Mostrar "La cantidad de vacunas a aplicar para  Poliomielitis (IPV o Salk) es de: ", contador2
+	Mostrar "La cantidad de vacunas a aplicar para Quíntuple (o pentavalente) es de: ", contador3
+	Mostrar "La cantidad de vacunas a aplicar para Rotavirus es de: ", contador4
+	Mostrar "La cantidad de vacunas a aplicar para  Meningococo es de: ", contador5
+	Mostrar "La cantidad de vacunas a aplicar para  Tripe Viral es de: ", contador6
 FinSubProceso
 	
