@@ -259,6 +259,34 @@ SubProceso ordenarYMostrar(array, filas)
 	FinSi
 FinSubProceso
 
+SubProceso buscarPaciente(arrayPacientes) 
+    Definir dni Como Caracter
+    Definir i como Entero
+    Definir encontrado Como Logico
+	
+    Mostrar"Ingrese el dni: "
+    Leer dni
+    i = 0
+    encontrado = Falso
+	
+    Mientras i < 5 y no encontrado
+        Si arrayPacientes[i,1] == dni Entonces
+            encontrado = Verdadero
+            Mostrar "Nombre y apellido: ", arrayPacientes[i, 0]
+            Mostrar "DNI: ", arrayPacientes[i, 1]
+            Mostrar "Edad: ", arrayPacientes[i, 2]
+            Mostrar "Vacuna: ", arrayPacientes[i, 3]
+            Mostrar "Día: ", arrayPacientes[i, 4]
+            Mostrar "Hora: ", arrayPacientes[i, 5]
+        FinSi
+        i = i + 1
+    FinMientras
+	
+    Si no encontrado  Entonces
+        Escribir "No se encontro el elemento"
+    FinSi
+FinSubProceso
+
 SubProceso ordenarLista(array, filas, columnas, columnaAOrdenar)
 	//Para i = 0 Hasta 4 Hacer
 		//arrayOrdenado[i, 0] = array[i, 0]
@@ -293,17 +321,7 @@ SubProceso ordenarLista(array, filas, columnas, columnaAOrdenar)
 	FinPara
 FinSubProceso
 
-SubProceso buscarPaciente(array) 
-	Mostrar"Ingrese su dni:"
-	Leer dni
-	Para i<-0 Hasta array-1  Hacer
-		Si array[i,1] = dni Entonces
-			Para j<-0 Hasta 5 Hacer
-				Mostrar array[i,j]
-			Fin Para
-		FinSi
-	Fin Para
-FinSubProceso
+
 
 SubProceso mostrarAgenda(array,filas,columnas)
 	Para i<-0 Hasta filas-1  Hacer
