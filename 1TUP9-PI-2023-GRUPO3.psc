@@ -96,23 +96,19 @@ Algoritmo sin_titulo
 				mostrarHorarios(turnosHorarios, 5, 9, pacientes,indice, vacunas, stockVacunas, vacunasSelec)
 				
 			"2":
-				
 				Escribir "Funcion buscar"
 				buscarPaciente(pacientes)
 				
 			"3":
-				
 				Escribir "Funcion ver agenda"
-				mostrarAgenda(turnosHorarios,5,9)
+				mostrarAgenda(turnosHorarios, 5, 9)
 				
 			"4":
-				
 				Escribir "Funcion ordenar y mostrar"
-				ordenarYMostrar(pacientes, 5)
+				ordenarYMostrar(pacientes, 5, indice)
 			
 				
 			"5":
-				
 				Escribir "Funcion listado"
 				mostrarContadores(pacientes, 5)
 				
@@ -120,18 +116,16 @@ Algoritmo sin_titulo
 		
 	Mientras Que (entradaMayu <> "SALIR") 
 	
-	Escribir "Se salio del sistema"
+	Escribir "Se salió del sistema"
 	
 FinAlgoritmo
 
-
-
-SubProceso mostrarHorarios(arreglo, filas, columnas, pacientes, indice Por Referencia,vacunas , stockVacunas Por Referencia, vacunasSelec Por Referencia)
+SubProceso mostrarHorarios(arreglo, filas, columnas, pacientes, indice Por Referencia, vacunas, stockVacunas Por Referencia, vacunasSelec Por Referencia)
 	Para i = 0 Hasta filas - 1
 		contador = 0
 		todasLibres = Verdadero 
 		Para j = 1 hasta columnas - 1
-			Si arreglo[i, j] == "  Ocupado" Entonces
+			Si Longitud(arreglo[i, j]) > 5  Entonces
 				contador = contador + 1
 			FinSi
 		FinPara
@@ -141,18 +135,18 @@ SubProceso mostrarHorarios(arreglo, filas, columnas, pacientes, indice Por Refer
 		Si todasLibres Entonces
 			Mostrar i + 1, " - ", arreglo[i, 0]
 		SiNo
-			Mostrar "No hay turnos disponibles para este día"
+			Mostrar i + 1, " - ", arreglo[i, 0], " - No hay turnos disponibles"
 		FinSi
 	FinPara
 	
 	// mando a llamar este subproceso aca para que una vez que muestre los dias se ejecute la eleccion del horario
 	//tambien por si elige un dia "ocupado" asi vuelve para atras y elige otro dia
-	elegirHorario(arreglo, 9, pacientes, indice,vacunas, stockVacunas, vacunasSelec)
+	elegirHorario(arreglo, filas, columnas, pacientes, indice,vacunas, stockVacunas, vacunasSelec)
 	
 FinSubProceso
 
 
-SubProceso elegirHorario(arreglo, filas, pacientes, indice Por Referencia, vacunas, stockVacunas Por Referencia, vacunasSelec Por Referencia)
+SubProceso elegirHorario(arreglo, filas, columnas, pacientes, indice Por Referencia, vacunas, stockVacunas Por Referencia, vacunasSelec Por Referencia)
 	Escribir "Elija el dia 1-5"
 	Leer dia
 	Mientras dia < 1 o dia > 5
@@ -160,13 +154,9 @@ SubProceso elegirHorario(arreglo, filas, pacientes, indice Por Referencia, vacun
 		Leer dia
 	FinMientras
 	
-	//Para i = 0 hasta filas - 1
-		//Mostrar arreglo[dia - 1, i]
-	//FinPara
-	
 	Para i = dia - 1 Hasta dia - 1 Hacer
 		Mostrar arreglo[dia - 1, 0], ":"
-		para j = 1 hasta 7 Hacer
+		Para j = 1 hasta 7 Hacer
 			Mostrar "  ", j, " - ", arreglo[dia - 1, j]
 		FinPara
 	FinPara
@@ -180,19 +170,18 @@ SubProceso elegirHorario(arreglo, filas, pacientes, indice Por Referencia, vacun
 	FinMientras
 	
 	// Aca si elige un dia que esta "ocupado" manda a llamar al subproceso que muestra los dias
-	Mientras arreglo[dia - 1, hora] = "  Ocupado"
-		Escribir "Elija otro horario por favor. Ese ya está ocupado"
+	Mientras Longitud(arreglo[dia - 1, hora]) > 5 
+		Escribir "Elija otra hora por favor. Esa ya está ocupada"
 		Leer hora
 		//mostrarHorarios(arreglo, 5, 9, pacientes, indice)
 	FinMientras
 	
 	cargarPaciente(dia, hora, pacientes, arreglo, indice, vacunas, stockVacunas, vacunasSelec)
 	
-	arreglo[dia - 1, hora] = "  Ocupado"
+	diaOcupado = Concatenar(arreglo[dia - 1, hora], " (Ocupado)")
+	arreglo[dia - 1, hora] =  diaOcupado
 
 FinSubProceso
-
-
 
 SubProceso cargarPaciente(dia, hora, pacientes, arregloHorario, indice Por Referencia, vacunas, stockVacunas Por Referencia, vacunasSelec Por Referencia)
 	Definir nombre, apellido, dni, edad Como Cadena
@@ -243,7 +232,7 @@ SubProceso elegirVacuna(vacunas, stockVacunas Por Referencia, entrada, vacunaSel
 	stockVacunas[entrada-1] = (stockVacunas[entrada-1])-1
 FinSubProceso
 
-SubProceso ordenarYMostrar(array, filas)
+SubProceso ordenarYMostrar(arrayPacientes, filas, indicePacientes)
 	Definir orden Como Caracter
 	Repetir
 		Escribir "Ordenar y mostrar lista pacientes"
@@ -253,10 +242,35 @@ SubProceso ordenarYMostrar(array, filas)
 	Mientras Que orden<>"a" y orden<>"b"
 	
 	si orden="a" Entonces
-		ordenarLista(array, filas , 6, 2)
+		ordenarLista(arrayPacientes, filas , 6, 2, indicePacientes)
 	SiNo
-		ordenarLista(array, filas , 6, 3)
+		ordenarLista(arrayPacientes, filas , 6, 3, indicePacientes)
 	FinSi
+FinSubProceso
+
+SubProceso ordenarLista(arrayPacientes, filas, columnas, columnaAOrdenar, indicePacientes)	
+	Definir aux, aux2 Como caracter; //cambiar el tipo de dato según el tipo de datos del array
+	Para i<-0 Hasta filas-2 Hacer //recorro las filas del array hasta la penultima
+		para k<-i+1 hasta filas-1 Hacer //recorro las filas del array hasta la última
+			si arrayPacientes[i,columnaAOrdenar] < arrayPacientes[k,columnaAOrdenar] Entonces
+				Para j<-0 Hasta columnas-1 Hacer //recorro las columnas del array
+					aux <- arrayPacientes[i,j];
+					arrayPacientes[i,j] <- arrayPacientes[k,j]; 
+					arrayPacientes[k,j] <- aux; 
+				Fin Para
+			FinSi
+		FinPara
+	FinPara
+	
+	Para i = 0 Hasta indicePacientes - 1 Hacer
+		Mostrar "Nombre y apellido: ", arrayPacientes[i, 0]
+		Mostrar "DNI: ", arrayPacientes[i, 1]
+		Mostrar "Edad: ", arrayPacientes[i, 2]
+		Mostrar "Vacuna: ", arrayPacientes[i, 3]
+		Mostrar "Día: ", arrayPacientes[i, 4]
+		Mostrar "Hora: ", arrayPacientes[i, 5]
+		Mostrar " "
+	FinPara
 FinSubProceso
 
 SubProceso buscarPaciente(arrayPacientes) 
@@ -283,52 +297,18 @@ SubProceso buscarPaciente(arrayPacientes)
     FinMientras
 	
     Si no encontrado  Entonces
-        Escribir "No se encontro el elemento"
+        Escribir "No se encontró el elemento"
     FinSi
 FinSubProceso
 
-SubProceso ordenarLista(array, filas, columnas, columnaAOrdenar)
-	//Para i = 0 Hasta 4 Hacer
-		//arrayOrdenado[i, 0] = array[i, 0]
-		//para j = 1 hasta 5 Hacer
-			//arrayOrdenado[i, j] = array[i, j]
-		//FinPara
-	//FinPara
-	
-	Definir aux, aux2 Como caracter; //cambiar el tipo de dato según el tipo de datos del array
-	Para i<-0 Hasta filas-2 Hacer //recorro las filas del array hasta la penultima
-		para k<-i+1 hasta filas-1 Hacer //recorro las filas del array hasta la última
-			si array[i,columnaAOrdenar] > array[k,columnaAOrdenar] Entonces
-				Para j<-0 Hasta columnas-1 Hacer //recorro las columnas del array
-					aux <- array[i,j];
-					//aux2 = arrayOrdenado[i, j] 
-					
-					array[i,j] <- array[k,j]; 
-					//arrayOrdenado[i, j] = array[k, j]
-					
-					array[k,j] <- aux; 
-					//arrayOrdenado[k, j] = aux2
-					
-				Fin Para
-			FinSi
-		FinPara
-	FinPara
-	
-	Para i = 0 Hasta 4 Hacer
-		para j = 0 hasta 5 Hacer
-			Mostrar array[i, j]
-		FinPara
-	FinPara
-FinSubProceso
-
-
-
 SubProceso mostrarAgenda(array,filas,columnas)
 	Para i<-0 Hasta filas-1  Hacer
-		Mostrar array[i,0]
+		Mostrar Sin Saltar array[i,0], ": "
 		Para j<-1 Hasta columnas-1 Hacer
-			mostrar array[i,j]
+			mostrar sin saltar array[i,j], " | "
 		Fin Para
+		Mostrar " "
+		Mostrar " "
 	Fin Para
 FinSubProceso
 
@@ -395,11 +375,11 @@ SubProceso contadorDeVacunas(array, filas, columnaElegida)
 			Fin Segun
 		Fin Para
 	Fin Para
-	Mostrar "La cantidad de vacunas a aplicar para  Neumococo conjugada es de: ", contador1
-	Mostrar "La cantidad de vacunas a aplicar para  Poliomielitis (IPV o Salk) es de: ", contador2
+	Mostrar "La cantidad de vacunas a aplicar para Neumococo conjugada es de: ", contador1
+	Mostrar "La cantidad de vacunas a aplicar para Poliomielitis (IPV o Salk) es de: ", contador2
 	Mostrar "La cantidad de vacunas a aplicar para Quíntuple (o pentavalente) es de: ", contador3
 	Mostrar "La cantidad de vacunas a aplicar para Rotavirus es de: ", contador4
-	Mostrar "La cantidad de vacunas a aplicar para  Meningococo es de: ", contador5
-	Mostrar "La cantidad de vacunas a aplicar para  Tripe Viral es de: ", contador6
+	Mostrar "La cantidad de vacunas a aplicar para Meningococo es de: ", contador5
+	Mostrar "La cantidad de vacunas a aplicar para Tripe Viral es de: ", contador6
 FinSubProceso
 	
