@@ -155,16 +155,27 @@ SubProceso mostrarDias(arregloHorarios, filas, columnas)
 FinSubProceso
 
 SubProceso elegirTurno(arregloHorarios, filas, columnas, pacientes, indicePaciente Por Referencia, diaLibre Por Referencia)
-	Definir cont Como Entero
+	Definir cont, dia, hora Como Entero
+	Definir diaCaracter, horaCaracter Como Caracter
 	cont = 0
-	Escribir "Elija el dia 1-5"
-	Leer dia
-	Mientras dia < 1 o dia > 5
-		Escribir "Error: elija el dia 1-5"
-		Leer dia
-	FinMientras
 	
-	Para i = dia - 1 Hasta dia - 1 Hacer
+	Repetir
+		Escribir "Elija el dia 1-5"
+		Leer diaCaracter
+		esNumero = validarDato(diaCaracter)
+		Si esNumero
+			dia = ConvertirANumero(diaCaracter)
+			Mientras dia < 1 o dia > 5
+				Escribir "Error: elija el dia 1-5"
+				Leer diaCaracter
+				dia = ConvertirANumero(diaCaracter)
+				esNumero = validarDato(diaCarac)
+			FinMientras
+		FinSi
+		
+	Mientras Que no esNumero
+	
+	Para i = dia - 1 Hasta dia- 1 Hacer
 		Para j = 1 hasta 7 Hacer
 			Si Longitud(arregloHorarios[i, j]) > 5 Entonces
 				cont = cont + 1
@@ -184,19 +195,32 @@ SubProceso elegirTurno(arregloHorarios, filas, columnas, pacientes, indicePacien
 			FinPara
 		FinPara
 		
-		Escribir "Elija la hora 1-8"
-		Leer hora
-		
-		Mientras hora < 1 o hora > 8 
-			Escribir "Error: elija el horario 1-8"
-			Leer hora
-		FinMientras
-		
-		Mientras Longitud(arregloHorarios[dia - 1, hora]) > 5 
-			Escribir "Elija otra hora por favor. Esa ya está ocupada"
-			Leer hora
-		FinMientras
-		
+		Repetir
+			Escribir "Elija la hora 1-8"
+			Leer horaCaracter
+			esNumero = validarDato(horaCaracter)
+			Si esNumero
+				hora = ConvertirANumero(horaCaracter)
+				Mientras hora < 1 o hora > 8 o no esNumero
+					Escribir "Error: elija el horario 1-8"
+					Leer horaCaracter
+					esNumero = validarDato(horaCaracter)
+					Si esNumero
+						hora = ConvertirANumero(horaCaracter)
+					FinSi
+				FinMientras
+				
+				Mientras Longitud(arregloHorarios[dia - 1, hora]) > 5 o no esNumero
+					Escribir "Elija otra hora por favor. Esa ya está ocupada"
+					Leer horaCaracter
+					esNumero = validarDato(horaCaracter)
+					Si esNumero
+						hora = ConvertirANumero(horaCaracter)
+					FinSi
+				FinMientras
+			FinSi
+		Mientras Que no esNumero
+
 		pacientes[indicePaciente, 4] = arregloHorarios[dia - 1, 0]
 		
 		pacientes[indicePaciente, 5] = arregloHorarios[dia  - 1, hora]
@@ -212,16 +236,20 @@ SubProceso cargarPaciente(pacientes, indicePaciente Por Referencia, nombreDuplic
 	
 		Escribir "Ingrese su nombre"
 		Leer nombre
-		Mientras Longitud(nombre) < 3
-			Escribir "Ingrese su nombre"
+		esNumero = validarDato(nombre)
+		Mientras esNumero o nombre == " "
+			Escribir "Ingrese su nombre por favor"
 			Leer nombre
+			esNumero = validarDato(nombre)
 		FinMientras
 		
 		Escribir "Ingrese su apellido"
 		Leer apellido
-		Mientras Longitud(apellido) < 2
-			Escribir "Ingrese su apellido"
+		esNumero = validarDato(apellido)
+		Mientras esNumero o apellido == " "
+			Escribir "Ingrese su apellido por favor"
 			Leer apellido
+			esNumero = validarDato(apellido)
 		FinMientras
 		
 		nombreCompleto = nombre + " " + apellido
@@ -230,9 +258,18 @@ SubProceso cargarPaciente(pacientes, indicePaciente Por Referencia, nombreDuplic
 		Repetir
 			Escribir "Ingrese su DNI"
 			Leer dni
-			Mientras ConvertirANumero(dni) < 1000000 o ConvertirANumero(dni) > 99999999
+			esNumero = validarDato(dni)
+			Mientras no esNumero
 				Escribir "Ingrese un DNI válido"
 				Leer dni
+				esNumero = validarDato(dni)
+				Si esNumero
+					Mientras ConvertirANumero(dni) < 1000000 o ConvertirANumero(dni) > 99999999
+						Escribir "Ingrese un DNI menor a 1000000 o mayor a 99999999"
+						Leer dni
+						esNumero = validarDato(dni)
+					FinMientras
+				FinSi
 			FinMientras
 			
 			encontrarDNI = buscarDNI(pacientes, 5, 1, dni)
@@ -242,12 +279,20 @@ SubProceso cargarPaciente(pacientes, indicePaciente Por Referencia, nombreDuplic
 				pacientes[indicePaciente, 1] = dni
 				Escribir "Ingrese su edad"
 				Leer edad
-				Mientras ConvertirANumero(edad) < 0.1 o ConvertirANumero(edad) > 99
-					Escribir "Ingrese su edad nuevamente"
+				esNumero = validarDato(edad)
+				Mientras no esNumero
+					Escribir "Ingrese su edad por favor"
 					Leer edad
+					esNumero = validarDato(edad)
+					Si esNumero
+						Mientras ConvertirANumero(edad) < 0.1 o ConvertirANumero(edad) > 99 
+							Escribir "Ingrese su edad nuevamente"
+							Leer edad
+							esNumero = validarDato(edad)
+						FinMientras
+					FinSi
 				FinMientras
-				edadEnMeses = ConvertirANumero(edad) / 12
-				pacientes[indicePaciente, 2] = ConvertirATexto(edadEnMeses)
+				pacientes[indicePaciente, 2] = edad
 			SiNo
 				dniDuplicado = Verdadero
 				Escribir "Ya hay otro paciente con ese DNI"
@@ -266,16 +311,48 @@ SubProceso mostrarVacuna(pacientes, vacunas, stockVacunas, filas)
 FinSubProceso
 
 SubProceso elegirVacuna(pacientes, vacunas, stockVacunas, indicePaciente Por Referencia)
+	Definir entrada Como Caracter
 	Mostrar "Que vacuna desea: "
 	Leer entrada
-	Mientras stockVacunas[entrada-1] == 0
-		Escribir "La vacuna que eligió no tiene más stock. Elija otra por favor"
+	esNumero = validarDato(entrada)
+	Mientras no esNumero
+		Mostrar "Que vacuna desea: "
 		Leer entrada
+		esNumero = validarDato(entrada)
+		Si esNumero
+			Mientras ConvertirANumero(entrada) < 1 o ConvertirANumero(entrada) > 6
+				Mostrar "Ingrese una de las vacunas mostradas: "
+				Leer entrada
+				esNumero = validarDato(entrada)
+			FinMientras
+			Mientras stockVacunas[ConvertirANumero(entrada)-1] == 0
+				Escribir "La vacuna que eligió no tiene más stock. Elija otra por favor"
+				Leer entrada
+				esNumero = validarDato(entrada)
+			FinMientras
+		FinSi
 	FinMientras
-	vacunaSelec = vacunas[entrada-1]
-	stockVacunas[entrada-1] = (stockVacunas[entrada-1])-1
+	vacunaSelec = vacunas[ConvertirANumero(entrada)-1]
+	stockVacunas[ConvertirANumero(entrada)-1] = (stockVacunas[ConvertirANumero(entrada)-1]) - 1
 	pacientes[indicePaciente, 3] = vacunaSelec
 FinSubProceso
+
+Funcion esNumero = validarDato(valorIngresado) 
+	Definir esNumero Como Logico
+	
+	esNumero <- Verdadero 
+	i <- 0
+	
+	Mientras esNumero Y i <= Longitud(valorIngresado)-1 Hacer
+		letra <- SubCadena(valorIngresado, i, Longitud(valorIngresado)-1)
+		Si letra >= "0" y letra <= "9" Entonces
+			esNumero = Verdadero
+		Sino
+			esNumero = Falso
+		Fin Si
+		i <- i + 1
+	Fin Mientras
+Fin Funcion
 
 SubProceso ordenarYMostrar(arrayPacientes, filas, indicePacientes)
 	Definir orden Como Caracter
