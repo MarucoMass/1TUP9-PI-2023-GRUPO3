@@ -155,7 +155,8 @@ SubProceso mostrarDias(arregloHorarios, filas, columnas)
 FinSubProceso
 
 SubProceso elegirTurno(arregloHorarios, filas, columnas, pacientes, indicePaciente Por Referencia, diaLibre Por Referencia)
-	Definir cont, dia, hora Como Entero
+	Definir cont Como Entero
+	Definir  dia, hora Como Real
 	Definir diaCaracter, horaCaracter Como Caracter
 	cont = 0
 	
@@ -231,8 +232,8 @@ SubProceso elegirTurno(arregloHorarios, filas, columnas, pacientes, indicePacien
 FinSubProceso
 
 SubProceso cargarPaciente(pacientes, indicePaciente Por Referencia, nombreDuplicado Por Referencia, dniDuplicado Por Referencia)
-	Definir nombre, apellido, dni, edad Como Cadena
-	Definir edadEnMeses Como Real
+	Definir nombre, apellido, dni, edad Como Caracter
+	Definir edadEnMeses Como Caracter
 	
 		Escribir "Ingrese su nombre"
 		Leer nombre
@@ -277,7 +278,7 @@ SubProceso cargarPaciente(pacientes, indicePaciente Por Referencia, nombreDuplic
 			Si no encontrarDNI Entonces
 				dniDuplicado = Falso
 				pacientes[indicePaciente, 1] = dni
-				Escribir "Ingrese su edad"
+				Escribir "Ingrese su edad(si su edad es en meses ingrese un 0 antes de la cantidad de meses sin puntos ni comas)"
 				Leer edad
 				esNumero = validarDato(edad)
 				Mientras no esNumero
@@ -285,13 +286,16 @@ SubProceso cargarPaciente(pacientes, indicePaciente Por Referencia, nombreDuplic
 					Leer edad
 					esNumero = validarDato(edad)
 					Si esNumero
-						Mientras ConvertirANumero(edad) < 0.1 o ConvertirANumero(edad) > 99 
+						Mientras ConvertirANumero(edad) < 0.1 o ConvertirANumero(edad) > 90
 							Escribir "Ingrese su edad nuevamente"
 							Leer edad
 							esNumero = validarDato(edad)
 						FinMientras
 					FinSi
 				FinMientras
+				si	SubCadena(edad, 0, 0) == "0" Entonces
+					edad = "0." + Subcadena(edad, 1, 2)
+				FinSi
 				pacientes[indicePaciente, 2] = edad
 			SiNo
 				dniDuplicado = Verdadero
@@ -345,7 +349,7 @@ Funcion esNumero = validarDato(valorIngresado)
 	
 	Mientras esNumero Y i <= Longitud(valorIngresado)-1 Hacer
 		letra <- SubCadena(valorIngresado, i, Longitud(valorIngresado)-1)
-		Si letra >= "0" y letra <= "9" Entonces
+		Si letra >= "0" y letra <= "9"  Entonces
 			esNumero = Verdadero
 		Sino
 			esNumero = Falso
