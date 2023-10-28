@@ -1,9 +1,11 @@
-Algoritmo sin_titulo
+Algoritmo turnosVacunatorio
 	
-	Definir opcionS, stockVacunas, indice Como Entero
+	Definir opcionS, stockVacunas, indicePaciente Como Entero
 	Definir entrada, entradaMayu, turnosHorarios, horarios, vacunas, pacientes Como Caracter
-	indice = 0
-
+	Definir diaLibre Como Logico
+	entrada = ""
+	indicePaciente = 0
+	
 	// array con las horas
     Dimension horarios[8]
     horarios[0] = "08:00"
@@ -48,10 +50,8 @@ Algoritmo sin_titulo
 	stockVacunas[4] = 10
 	stockVacunas[5] = 10
 	
+	// array de los datos de los pacientes
 	Dimension pacientes[5, 6]
-	Dimension pacientesOrdenados[5, 6]
-	
-	entrada = ""
 	
 	Repetir
 		
@@ -92,40 +92,51 @@ Algoritmo sin_titulo
 		Segun entrada Hacer
 			
 			"1":
-				Escribir "Funcion reservar"
-				mostrarHorarios(turnosHorarios, 5, 9, pacientes,indice, vacunas, stockVacunas, vacunasSelec)
+				Escribir "Función reservar"
+				reservarTurno(turnosHorarios, 5, 9, pacientes, indicePaciente, vacunas, stockVacunas, vacunasSelec, diaLibre)
 				
 			"2":
-				Escribir "Funcion buscar"
+				Escribir "Función buscar"
 				buscarPaciente(pacientes)
 				
 			"3":
-				Escribir "Funcion ver agenda"
+				Escribir "Función ver agenda"
 				mostrarAgenda(turnosHorarios, 5, 9)
 				
 			"4":
-				Escribir "Funcion ordenar y mostrar"
-				ordenarYMostrar(pacientes, 5, indice)
-			
+				Escribir "Función ordenar y mostrar"
+				ordenarYMostrar(pacientes, 5, indicePaciente)
 				
 			"5":
-				Escribir "Funcion listado"
+				Escribir "Función listado"
 				mostrarContadores(pacientes, 5)
 				
 		Fin Segun
 		
 	Mientras Que (entradaMayu <> "SALIR") 
 	
-	Escribir "Se salió del sistema"
+	Escribir "Se salió del sistema."
 	
 FinAlgoritmo
 
-SubProceso mostrarHorarios(arreglo, filas, columnas, pacientes, indice Por Referencia, vacunas, stockVacunas Por Referencia, vacunasSelec Por Referencia)
+SubProceso reservarTurno(arregloHorarios, filas, columnas, pacientes, indicePaciente Por Referencia, vacunas, stockVacunas Por Referencia, vacunasSelec Por Referencia, diaLibre Por Referencia)
+	diaLibre = Verdadero
+	mostrarDias(arregloHorarios, filas, columnas)
+	elegirHorario(arregloHorarios, filas, columnas, pacientes, indicePaciente, diaLibre)
+	Si diaLibre
+		cargarPaciente(pacientes, indicePaciente)
+		mostrarVacuna(vacunas, stockVacunas, 6)
+		elegirVacuna(pacientes, vacunas, stockVacunas, indicePaciente)
+		indicePaciente = indicePaciente + 1
+	FinSi
+FinSubProceso
+
+SubProceso mostrarDias(arregloHorarios, filas, columnas)
 	Para i = 0 Hasta filas - 1
 		contador = 0
 		todasLibres = Verdadero 
 		Para j = 1 hasta columnas - 1
-			Si Longitud(arreglo[i, j]) > 5  Entonces
+			Si Longitud(arregloHorarios[i, j]) > 5  Entonces
 				contador = contador + 1
 			FinSi
 		FinPara
@@ -133,20 +144,16 @@ SubProceso mostrarHorarios(arreglo, filas, columnas, pacientes, indice Por Refer
 			todasLibres = Falso
 		FinSi
 		Si todasLibres Entonces
-			Mostrar i + 1, " - ", arreglo[i, 0]
+			Mostrar i + 1, " - ", arregloHorarios[i, 0]
 		SiNo
-			Mostrar i + 1, " - ", arreglo[i, 0], " - No hay turnos disponibles"
+			Mostrar i + 1, " - ", arregloHorarios[i, 0], " - No hay turnos disponibles"
 		FinSi
 	FinPara
-	
-	// mando a llamar este subproceso aca para que una vez que muestre los dias se ejecute la eleccion del horario
-	//tambien por si elige un dia "ocupado" asi vuelve para atras y elige otro dia
-	elegirHorario(arreglo, filas, columnas, pacientes, indice,vacunas, stockVacunas, vacunasSelec)
-	
 FinSubProceso
 
-
-SubProceso elegirHorario(arreglo, filas, columnas, pacientes, indice Por Referencia, vacunas, stockVacunas Por Referencia, vacunasSelec Por Referencia)
+SubProceso elegirHorario(arregloHorarios, filas, columnas, pacientes, indicePaciente Por Referencia, diaLibre Por Referencia)
+	Definir cont Como Entero
+	cont = 0
 	Escribir "Elija el dia 1-5"
 	Leer dia
 	Mientras dia < 1 o dia > 5
@@ -155,69 +162,89 @@ SubProceso elegirHorario(arreglo, filas, columnas, pacientes, indice Por Referen
 	FinMientras
 	
 	Para i = dia - 1 Hasta dia - 1 Hacer
-		Mostrar arreglo[dia - 1, 0], ":"
 		Para j = 1 hasta 7 Hacer
-			Mostrar "  ", j, " - ", arreglo[dia - 1, j]
+			Si Longitud(arregloHorarios[i, j]) > 5 Entonces
+				cont = cont + 1
+			FinSi
 		FinPara
 	FinPara
 	
-	Escribir "Elija la hora 1-8"
-	Leer hora
-	
-	Mientras hora < 1 o hora > 8 
-		Escribir "Error: elija el horario 1-8"
+	Si cont >= 7 Entonces
+		Escribir "El dia que eligió tiene todos los horarios ocupados."
+		Escribir " "
+		diaLibre = Falso
+	Sino 
+		Para i = dia - 1 Hasta dia - 1 Hacer
+			Mostrar arregloHorarios[dia - 1, 0], ":"
+			Para j = 1 hasta 7 Hacer
+				Mostrar "  ", j, " - ", arregloHorarios[dia - 1, j]
+			FinPara
+		FinPara
+		
+		Escribir "Elija la hora 1-8"
 		Leer hora
-	FinMientras
-	
-	// Aca si elige un dia que esta "ocupado" manda a llamar al subproceso que muestra los dias
-	Mientras Longitud(arreglo[dia - 1, hora]) > 5 
-		Escribir "Elija otra hora por favor. Esa ya está ocupada"
-		Leer hora
-		//mostrarHorarios(arreglo, 5, 9, pacientes, indice)
-	FinMientras
-	
-	cargarPaciente(dia, hora, pacientes, arreglo, indice, vacunas, stockVacunas, vacunasSelec)
-	
-	diaOcupado = Concatenar(arreglo[dia - 1, hora], " (Ocupado)")
-	arreglo[dia - 1, hora] =  diaOcupado
-
+		
+		Mientras hora < 1 o hora > 8 
+			Escribir "Error: elija el horario 1-8"
+			Leer hora
+		FinMientras
+		
+		// Aca si elige un dia que esta "ocupado" manda a llamar al subproceso que muestra los dias
+		Mientras Longitud(arregloHorarios[dia - 1, hora]) > 5 
+			Escribir "Elija otra hora por favor. Esa ya está ocupada"
+			Leer hora
+		FinMientras
+		
+		pacientes[indicePaciente, 4] = arregloHorarios[dia - 1, 0]
+		
+		pacientes[indicePaciente, 5] = arregloHorarios[dia  - 1, hora]
+		
+		diaOcupado = Concatenar(arregloHorarios[dia - 1, hora], " (Ocupado)")
+		arregloHorarios[dia - 1, hora] =  diaOcupado
+	FinSi
 FinSubProceso
 
-SubProceso cargarPaciente(dia, hora, pacientes, arregloHorario, indice Por Referencia, vacunas, stockVacunas Por Referencia, vacunasSelec Por Referencia)
+SubProceso cargarPaciente(pacientes, indicePaciente Por Referencia)
 	Definir nombre, apellido, dni, edad Como Cadena
 	
 		Escribir "Ingrese su nombre"
 		Leer nombre
+		Mientras Longitud(nombre) < 3
+			Escribir "Ingrese su nombre"
+			Leer nombre
+		FinMientras
 		
 		Escribir "Ingrese su apellido"
 		Leer apellido
+		Mientras Longitud(apellido) < 3
+			Escribir "Ingrese su apellido"
+			Leer apellido
+		FinMientras
 		
 		nombreCompleto = nombre + " " + apellido
-		pacientes[indice, 0] = nombreCompleto
+		pacientes[indicePaciente, 0] = nombreCompleto
 		
-		Escribir "Ingrese su dni"
+		Escribir "Ingrese su DNI"
 		Leer dni
-		pacientes[indice, 1] = dni
+		pacientes[indicePaciente, 1] = dni
+		Mientras ConvertirANumero(dni) < 1000000 o ConvertirANumero(dni) > 99999999
+			Escribir "Ingrese un DNI válido"
+			Leer dni
+		FinMientras
 		
 		Escribir "Ingrese su edad"
 		Leer edad
+		Mientras ConvertirANumero(edad) < 0.1 o ConvertirANumero(edad) > 99
+			Escribir "Ingrese su edad nuevamente"
+			Leer edad
+		FinMientras
 		
-		pacientes[indice, 2] = edad
-		mostrarVacuna(vacunas, stockVacunas,6)
-		elegirVacuna(vacunas, stockVacunas, entrada, vacunaSelec)
-		pacientes[indice, 3] = vacunaSelec
-		
-		pacientes[indice, 4] = arregloHorario[dia - 1, 0]
-		
-		pacientes[indice, 5] = arregloHorario[dia  - 1,hora]
-		
-		indice = indice + 1
-		
+		pacientes[indicePaciente, 2] = edad
 FinSubProceso
 
-SubProceso mostrarVacuna(vacunas, stockVacunas,filas)
+SubProceso mostrarVacuna(vacunas, stockVacunas, filas)
 	Para i<- 0 Hasta filas-1 Hacer
-		si stockVacunas[i] > 0 Entonces
+		Si stockVacunas[i] > 0 Entonces
 			mostrar i + 1, " - ", vacunas[i]
 		SiNo
 			mostrar i + 1, " - ", vacunas[i] , " - STOCK AGOTADO" 
@@ -225,11 +252,12 @@ SubProceso mostrarVacuna(vacunas, stockVacunas,filas)
 	Fin Para
 FinSubProceso
 
-SubProceso elegirVacuna(vacunas, stockVacunas Por Referencia, entrada, vacunaSelec Por Referencia)
+SubProceso elegirVacuna(pacientes, vacunas, stockVacunas Por Referencia, indicePaciente Por Referencia)
 	Mostrar "Que vacuna desea: "
 	Leer entrada
 	vacunaSelec = vacunas[entrada-1]
 	stockVacunas[entrada-1] = (stockVacunas[entrada-1])-1
+	pacientes[indicePaciente, 3] = vacunaSelec
 FinSubProceso
 
 SubProceso ordenarYMostrar(arrayPacientes, filas, indicePacientes)
@@ -249,11 +277,11 @@ SubProceso ordenarYMostrar(arrayPacientes, filas, indicePacientes)
 FinSubProceso
 
 SubProceso ordenarLista(arrayPacientes, filas, columnas, columnaAOrdenar, indicePacientes)	
-	Definir aux, aux2 Como caracter; //cambiar el tipo de dato según el tipo de datos del array
-	Para i<-0 Hasta filas-2 Hacer //recorro las filas del array hasta la penultima
-		para k<-i+1 hasta filas-1 Hacer //recorro las filas del array hasta la última
+	Definir aux, aux2 Como caracter; 
+	Para i<-0 Hasta filas-2 Hacer 
+		para k<-i+1 hasta filas-1 Hacer 
 			si arrayPacientes[i,columnaAOrdenar] < arrayPacientes[k,columnaAOrdenar] Entonces
-				Para j<-0 Hasta columnas-1 Hacer //recorro las columnas del array
+				Para j<-0 Hasta columnas-1 Hacer 
 					aux <- arrayPacientes[i,j];
 					arrayPacientes[i,j] <- arrayPacientes[k,j]; 
 					arrayPacientes[k,j] <- aux; 
@@ -292,6 +320,7 @@ SubProceso buscarPaciente(arrayPacientes)
             Mostrar "Vacuna: ", arrayPacientes[i, 3]
             Mostrar "Día: ", arrayPacientes[i, 4]
             Mostrar "Hora: ", arrayPacientes[i, 5]
+			Mostrar " "
         FinSi
         i = i + 1
     FinMientras
@@ -312,7 +341,7 @@ SubProceso mostrarAgenda(array,filas,columnas)
 	Fin Para
 FinSubProceso
 
-SubProceso mostrarContadores(array, filas)
+SubProceso mostrarContadores(arrayPacientes, filas)
 	Definir orden Como Caracter
 	Repetir
 		Escribir "Listado/s"
@@ -322,17 +351,17 @@ SubProceso mostrarContadores(array, filas)
 	Mientras Que orden<>"a" y orden<>"b"
 	
 	Si orden="a" Entonces
-		contadorDeDias(array, filas, 4)
+		contadorDeDias(arrayPacientes, filas, 4)
 	SiNo
-		contadorDeVacunas(array, filas, 3)
+		contadorDeVacunas(arrayPacientes, filas, 3)
 	FinSi
 FinSubProceso
 
-SubProceso contadorDeDias(array, filas, columnaElegida)
+SubProceso contadorDeDias(arrayPacientes, filas, columnaElegida)
 	Definir contador1, contador2, contador3, contador4, contador5 Como Entero
 	Para i<-0 Hasta filas-1  Hacer
 		Para j<-columnaElegida Hasta columnaElegida Hacer
-			Segun array[i, j] Hacer
+			Segun arrayPacientes[i, j] Hacer
 				"Lunes":
 					contador1 = contador1 + 1
 				"Martes":
@@ -354,11 +383,11 @@ SubProceso contadorDeDias(array, filas, columnaElegida)
 	Mostrar "La cantidad de turnos para el Viernes es de: ", contador5
 FinSubProceso
 
-SubProceso contadorDeVacunas(array, filas, columnaElegida)
+SubProceso contadorDeVacunas(arrayPacientes, filas, columnaElegida)
 	Definir contador1, contador2, contador3, contador4, contador5, contador6 Como Entero
 	Para i<-0 Hasta filas-1  Hacer
 		Para j<-columnaElegida Hasta columnaElegida Hacer
-			Segun array[i, j] Hacer
+			Segun arrayPacientes[i, j] Hacer
 				"Neumococo conjugada":
 					contador1 = contador1 + 1
 				"Poliomielitis (IPV o Salk)":
