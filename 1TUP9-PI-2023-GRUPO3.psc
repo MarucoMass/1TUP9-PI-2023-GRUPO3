@@ -2,7 +2,7 @@ Algoritmo turnosVacunatorio
 	
 	Definir opcionS, stockVacunas, indicePaciente Como Entero
 	Definir entrada, entradaMayu, turnosHorarios, horarios, vacunas, pacientes Como Caracter
-	Definir diaLibre Como Logico
+	Definir diaLibre, nombreDuplicado, dniDuplicado Como Logico
 	entrada = ""
 	indicePaciente = 0
 	
@@ -43,7 +43,7 @@ Algoritmo turnosVacunatorio
 	
 	// array del stock cuyo indice corresponde al del arrays de vacunas
 	Dimension stockVacunas[6]
-	stockVacunas[0] = 10
+	stockVacunas[0] = 1
 	stockVacunas[1] = 10
 	stockVacunas[2] = 10
 	stockVacunas[3] = 10
@@ -93,7 +93,7 @@ Algoritmo turnosVacunatorio
 			
 			"1":
 				Escribir "Función reservar"
-				reservarTurno(turnosHorarios, 5, 9, pacientes, indicePaciente, vacunas, stockVacunas, vacunasSelec, diaLibre)
+				reservarTurno(turnosHorarios, 5, 9, pacientes, indicePaciente, vacunas, stockVacunas, vacunasSelec, diaLibre, dniDuplicado)
 				
 			"2":
 				Escribir "Función buscar"
@@ -119,15 +119,18 @@ Algoritmo turnosVacunatorio
 	
 FinAlgoritmo
 
-SubProceso reservarTurno(arregloHorarios, filas, columnas, pacientes, indicePaciente Por Referencia, vacunas, stockVacunas Por Referencia, vacunasSelec Por Referencia, diaLibre Por Referencia)
+SubProceso reservarTurno(arregloHorarios, filas, columnas, pacientes, indicePaciente Por Referencia, vacunas, stockVacunas, vacunasSelec Por Referencia, diaLibre Por Referencia, dniDuplicado Por Referencia)
 	diaLibre = Verdadero
+	dniDuplicado = Falso
 	mostrarDias(arregloHorarios, filas, columnas)
-	elegirHorario(arregloHorarios, filas, columnas, pacientes, indicePaciente, diaLibre)
+	elegirTurno(arregloHorarios, filas, columnas, pacientes, indicePaciente, diaLibre)
 	Si diaLibre
-		cargarPaciente(pacientes, indicePaciente)
-		mostrarVacuna(vacunas, stockVacunas, 6)
-		elegirVacuna(pacientes, vacunas, stockVacunas, indicePaciente)
-		indicePaciente = indicePaciente + 1
+		cargarPaciente(pacientes, indicePaciente, nombreDuplicado, dniDuplicado)
+		Si no dniDuplicado Entonces
+			mostrarVacuna(pacientes, vacunas, stockVacunas, 6)
+			elegirVacuna(pacientes, vacunas, stockVacunas, indicePaciente)
+			indicePaciente = indicePaciente + 1
+		FinSi
 	FinSi
 FinSubProceso
 
@@ -151,7 +154,7 @@ SubProceso mostrarDias(arregloHorarios, filas, columnas)
 	FinPara
 FinSubProceso
 
-SubProceso elegirHorario(arregloHorarios, filas, columnas, pacientes, indicePaciente Por Referencia, diaLibre Por Referencia)
+SubProceso elegirTurno(arregloHorarios, filas, columnas, pacientes, indicePaciente Por Referencia, diaLibre Por Referencia)
 	Definir cont Como Entero
 	cont = 0
 	Escribir "Elija el dia 1-5"
@@ -189,7 +192,6 @@ SubProceso elegirHorario(arregloHorarios, filas, columnas, pacientes, indicePaci
 			Leer hora
 		FinMientras
 		
-		// Aca si elige un dia que esta "ocupado" manda a llamar al subproceso que muestra los dias
 		Mientras Longitud(arregloHorarios[dia - 1, hora]) > 5 
 			Escribir "Elija otra hora por favor. Esa ya está ocupada"
 			Leer hora
@@ -204,8 +206,9 @@ SubProceso elegirHorario(arregloHorarios, filas, columnas, pacientes, indicePaci
 	FinSi
 FinSubProceso
 
-SubProceso cargarPaciente(pacientes, indicePaciente Por Referencia)
+SubProceso cargarPaciente(pacientes, indicePaciente Por Referencia, nombreDuplicado Por Referencia, dniDuplicado Por Referencia)
 	Definir nombre, apellido, dni, edad Como Cadena
+	Definir edadEnMeses Como Real
 	
 		Escribir "Ingrese su nombre"
 		Leer nombre
@@ -216,7 +219,7 @@ SubProceso cargarPaciente(pacientes, indicePaciente Por Referencia)
 		
 		Escribir "Ingrese su apellido"
 		Leer apellido
-		Mientras Longitud(apellido) < 3
+		Mientras Longitud(apellido) < 2
 			Escribir "Ingrese su apellido"
 			Leer apellido
 		FinMientras
@@ -224,37 +227,51 @@ SubProceso cargarPaciente(pacientes, indicePaciente Por Referencia)
 		nombreCompleto = nombre + " " + apellido
 		pacientes[indicePaciente, 0] = nombreCompleto
 		
-		Escribir "Ingrese su DNI"
-		Leer dni
-		pacientes[indicePaciente, 1] = dni
-		Mientras ConvertirANumero(dni) < 1000000 o ConvertirANumero(dni) > 99999999
-			Escribir "Ingrese un DNI válido"
+		Repetir
+			Escribir "Ingrese su DNI"
 			Leer dni
-		FinMientras
-		
-		Escribir "Ingrese su edad"
-		Leer edad
-		Mientras ConvertirANumero(edad) < 0.1 o ConvertirANumero(edad) > 99
-			Escribir "Ingrese su edad nuevamente"
-			Leer edad
-		FinMientras
-		
-		pacientes[indicePaciente, 2] = edad
+			Mientras ConvertirANumero(dni) < 1000000 o ConvertirANumero(dni) > 99999999
+				Escribir "Ingrese un DNI válido"
+				Leer dni
+			FinMientras
+			
+			encontrarDNI = buscarDNI(pacientes, 5, 1, dni)
+			
+			Si no encontrarDNI Entonces
+				dniDuplicado = Falso
+				pacientes[indicePaciente, 1] = dni
+				Escribir "Ingrese su edad"
+				Leer edad
+				Mientras ConvertirANumero(edad) < 0.1 o ConvertirANumero(edad) > 99
+					Escribir "Ingrese su edad nuevamente"
+					Leer edad
+				FinMientras
+				edadEnMeses = ConvertirANumero(edad) / 12
+				pacientes[indicePaciente, 2] = ConvertirATexto(edadEnMeses)
+			SiNo
+				dniDuplicado = Verdadero
+				Escribir "Ya hay otro paciente con ese DNI"
+			FinSi
+		Mientras Que encontrarDNI
 FinSubProceso
 
-SubProceso mostrarVacuna(vacunas, stockVacunas, filas)
+SubProceso mostrarVacuna(pacientes, vacunas, stockVacunas, filas)
 	Para i<- 0 Hasta filas-1 Hacer
 		Si stockVacunas[i] > 0 Entonces
-			mostrar i + 1, " - ", vacunas[i]
+			Mostrar i + 1, " - ", vacunas[i]
 		SiNo
-			mostrar i + 1, " - ", vacunas[i] , " - STOCK AGOTADO" 
+			Mostrar i + 1, " - ", vacunas[i] , " - STOCK AGOTADO" 
 		FinSi
 	Fin Para
 FinSubProceso
 
-SubProceso elegirVacuna(pacientes, vacunas, stockVacunas Por Referencia, indicePaciente Por Referencia)
+SubProceso elegirVacuna(pacientes, vacunas, stockVacunas, indicePaciente Por Referencia)
 	Mostrar "Que vacuna desea: "
 	Leer entrada
+	Mientras stockVacunas[entrada-1] == 0
+		Escribir "La vacuna que eligió no tiene más stock. Elija otra por favor"
+		Leer entrada
+	FinMientras
 	vacunaSelec = vacunas[entrada-1]
 	stockVacunas[entrada-1] = (stockVacunas[entrada-1])-1
 	pacientes[indicePaciente, 3] = vacunaSelec
@@ -326,9 +343,23 @@ SubProceso buscarPaciente(arrayPacientes)
     FinMientras
 	
     Si no encontrado  Entonces
-        Escribir "No se encontró el elemento"
+        Escribir "No se encontró el DNI buscado"
+		Escribir " "
     FinSi
 FinSubProceso
+
+Funcion encontrado = buscarDNI(arrayPacientes, filas, columnaABuscar, datoAEncontrar)  
+    Definir encontrado Como Logico
+    indexPaciente = 0
+    encontrado = Falso
+
+    Mientras indexPaciente < filas - 1 y no encontrado
+        Si arrayPacientes[indexPaciente, columnaABuscar] == datoAEncontrar Entonces
+            encontrado = Verdadero
+        FinSi
+		indexPaciente =  indexPaciente + 1
+    FinMientras
+FinFuncion
 
 SubProceso mostrarAgenda(array,filas,columnas)
 	Para i<-0 Hasta filas-1  Hacer
