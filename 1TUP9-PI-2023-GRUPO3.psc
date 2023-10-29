@@ -1,10 +1,15 @@
 Algoritmo turnosVacunatorio
 	
-	Definir opcionS, stockVacunas, indicePaciente Como Entero
+	Definir opcionS, stockVacunas, indicePaciente, filasPacientes, columnasPacientes, filasHorarios, columnasHorarios, filasVacunas Como Entero
 	Definir entrada, entradaMayu, turnosHorarios, horarios, vacunas, pacientes Como Caracter
 	Definir diaLibre, nombreDuplicado, dniDuplicado Como Logico
 	entrada = ""
 	indicePaciente = 0
+	filasPacientes = 40
+	columnasPacientes = 6
+	filasHorarios = 5
+	columnasHorarios = 9
+	filasVacunas = 6
 	
 	// array con las horas
     Dimension horarios[8]
@@ -26,7 +31,7 @@ Algoritmo turnosVacunatorio
 	turnosHorarios[4,0] = "Viernes"
 	
 	// ciclo para cargar el arreglo de los horarios
-	Para i = 0 Hasta 4 
+	Para i = 0 Hasta filasHorarios - 1
 		Para j = 0 Hasta 7  
 			turnosHorarios[i,j + 1] = horarios[j]
 		FinPara
@@ -51,7 +56,7 @@ Algoritmo turnosVacunatorio
 	stockVacunas[5] = 10
 	
 	// array de los datos de los pacientes
-	Dimension pacientes[5, 6]
+	Dimension pacientes[filasPacientes, columnasPacientes]
 	
 	Repetir
 		
@@ -93,23 +98,23 @@ Algoritmo turnosVacunatorio
 			
 			"1":
 				Escribir "Función reservar"
-				reservarTurno(turnosHorarios, 5, 9, pacientes, indicePaciente, vacunas, stockVacunas, vacunasSelec, diaLibre, dniDuplicado)
+				reservarTurno(turnosHorarios, filasHorarios, columnasHorarios, pacientes, indicePaciente, vacunas, stockVacunas, vacunasSelec, diaLibre, dniDuplicado, filasVacunas)
 				
 			"2":
 				Escribir "Función buscar"
-				buscarPaciente(pacientes)
+				buscarPaciente(pacientes, filasPacientes)
 				
 			"3":
 				Escribir "Función ver agenda"
-				mostrarAgenda(turnosHorarios, 5, 9)
+				mostrarAgenda(turnosHorarios, filasHorarios, columnasHorarios)
 				
 			"4":
 				Escribir "Función ordenar y mostrar"
-				ordenarYMostrar(pacientes, 5, indicePaciente)
+				ordenarYMostrar(pacientes, filasPacientes, columnasPacientes, indicePaciente)
 				
 			"5":
 				Escribir "Función listado"
-				mostrarContadores(pacientes, 5)
+				mostrarContadores(pacientes, filasPacientes)
 				
 		Fin Segun
 		
@@ -119,7 +124,7 @@ Algoritmo turnosVacunatorio
 	
 FinAlgoritmo
 
-SubProceso reservarTurno(arregloHorarios, filas, columnas, pacientes, indicePaciente Por Referencia, vacunas, stockVacunas, vacunasSelec Por Referencia, diaLibre Por Referencia, dniDuplicado Por Referencia)
+SubProceso reservarTurno(arregloHorarios, filas, columnas, pacientes, indicePaciente Por Referencia, vacunas, stockVacunas, vacunasSelec Por Referencia, diaLibre Por Referencia, dniDuplicado Por Referencia, filasVacunas)
 	diaLibre = Verdadero
 	dniDuplicado = Falso
 	mostrarDias(arregloHorarios, filas, columnas)
@@ -127,7 +132,7 @@ SubProceso reservarTurno(arregloHorarios, filas, columnas, pacientes, indicePaci
 	Si diaLibre
 		cargarPaciente(pacientes, indicePaciente, nombreDuplicado, dniDuplicado)
 		Si no dniDuplicado Entonces
-			mostrarVacuna(pacientes, vacunas, stockVacunas, 6)
+			mostrarVacunas(pacientes, vacunas, stockVacunas, filasVacunas)
 			elegirVacuna(pacientes, vacunas, stockVacunas, indicePaciente)
 			indicePaciente = indicePaciente + 1
 		FinSi
@@ -155,10 +160,10 @@ SubProceso mostrarDias(arregloHorarios, filas, columnas)
 FinSubProceso
 
 SubProceso elegirTurno(arregloHorarios, filas, columnas, pacientes, indicePaciente Por Referencia, diaLibre Por Referencia)
-	Definir cont Como Entero
+	Definir contadorOcupado Como Entero
 	Definir  dia, hora Como Real
 	Definir diaCaracter, horaCaracter Como Caracter
-	cont = 0
+	contadorOcupado = 0
 	
 	Repetir
 		Escribir "Elija el dia 1-5"
@@ -179,12 +184,12 @@ SubProceso elegirTurno(arregloHorarios, filas, columnas, pacientes, indicePacien
 	Para i = dia - 1 Hasta dia- 1 Hacer
 		Para j = 1 hasta 7 Hacer
 			Si Longitud(arregloHorarios[i, j]) > 5 Entonces
-				cont = cont + 1
+				contadorOcupado = contadorOcupado + 1
 			FinSi
 		FinPara
 	FinPara
 	
-	Si cont >= 7 Entonces
+	Si contadorOcupado >= 7 Entonces
 		Escribir "El dia que eligió tiene todos los horarios ocupados."
 		Escribir " "
 		diaLibre = Falso
@@ -233,7 +238,8 @@ FinSubProceso
 
 SubProceso cargarPaciente(pacientes, indicePaciente Por Referencia, nombreDuplicado Por Referencia, dniDuplicado Por Referencia)
 	Definir nombre, apellido, dni, edad Como Caracter
-	Definir edadEnMeses Como Caracter
+	Definir edadEnMeses Como Logico
+	edadEnMeses = Falso
 	
 		Escribir "Ingrese su nombre"
 		Leer nombre
@@ -278,23 +284,36 @@ SubProceso cargarPaciente(pacientes, indicePaciente Por Referencia, nombreDuplic
 			Si no encontrarDNI Entonces
 				dniDuplicado = Falso
 				pacientes[indicePaciente, 1] = dni
-				Escribir "Ingrese su edad(si su edad es en meses ingrese un 0 antes de la cantidad de meses sin puntos ni comas)"
-				Leer edad
-				esNumero = validarDato(edad)
-				Mientras no esNumero
-					Escribir "Ingrese su edad por favor"
+				
+				Repetir
+					Escribir "Ingrese su edad"
+					Escribir "   a. En meses"
+					Escribir "   b. En años"
+					Leer edad
+				Mientras Que edad<>"a" y edad<>"b"
+				
+				si edad="a" Entonces
+					edadEnMeses = Verdadero
+					Escribir "Edad en meses 1-11"
 					Leer edad
 					esNumero = validarDato(edad)
-					Si esNumero
-						Mientras ConvertirANumero(edad) < 0.1 o ConvertirANumero(edad) > 90
+						Mientras no esNumero o ConvertirANumero(edad) < 1 o ConvertirANumero(edad) > 11
 							Escribir "Ingrese su edad nuevamente"
 							Leer edad
 							esNumero = validarDato(edad)
 						FinMientras
-					FinSi
-				FinMientras
-				si	SubCadena(edad, 0, 0) == "0" Entonces
-					edad = "0." + Subcadena(edad, 1, 2)
+				SiNo
+					Escribir "Edad en años"
+					Leer edad
+					esNumero = validarDato(edad)
+						Mientras no esNumero o ConvertirANumero(edad) < 1 o ConvertirANumero(edad) > 90
+							Escribir "Ingrese su edad nuevamente"
+							Leer edad
+							esNumero = validarDato(edad)
+						FinMientras
+				FinSi
+				Si edadEnMeses Entonces
+					edad = "0." + Subcadena(edad, 0, 1)
 				FinSi
 				pacientes[indicePaciente, 2] = edad
 			SiNo
@@ -304,8 +323,8 @@ SubProceso cargarPaciente(pacientes, indicePaciente Por Referencia, nombreDuplic
 		Mientras Que encontrarDNI
 FinSubProceso
 
-SubProceso mostrarVacuna(pacientes, vacunas, stockVacunas, filas)
-	Para i<- 0 Hasta filas-1 Hacer
+SubProceso mostrarVacunas(pacientes, vacunas, stockVacunas, filasVacunas)
+	Para i<- 0 Hasta filasVacunas-1 Hacer
 		Si stockVacunas[i] > 0 Entonces
 			Mostrar i + 1, " - ", vacunas[i]
 		SiNo
@@ -323,18 +342,16 @@ SubProceso elegirVacuna(pacientes, vacunas, stockVacunas, indicePaciente Por Ref
 		Mostrar "Que vacuna desea: "
 		Leer entrada
 		esNumero = validarDato(entrada)
-		Si esNumero
-			Mientras ConvertirANumero(entrada) < 1 o ConvertirANumero(entrada) > 6
+			Mientras no esNumero o ConvertirANumero(entrada) < 1 o ConvertirANumero(entrada) > 6 
 				Mostrar "Ingrese una de las vacunas mostradas: "
 				Leer entrada
 				esNumero = validarDato(entrada)
 			FinMientras
-			Mientras stockVacunas[ConvertirANumero(entrada)-1] == 0
+			Mientras no esNumero o stockVacunas[ConvertirANumero(entrada)-1] == 0
 				Escribir "La vacuna que eligió no tiene más stock. Elija otra por favor"
 				Leer entrada
 				esNumero = validarDato(entrada)
 			FinMientras
-		FinSi
 	FinMientras
 	vacunaSelec = vacunas[ConvertirANumero(entrada)-1]
 	stockVacunas[ConvertirANumero(entrada)-1] = (stockVacunas[ConvertirANumero(entrada)-1]) - 1
@@ -358,48 +375,7 @@ Funcion esNumero = validarDato(valorIngresado)
 	Fin Mientras
 Fin Funcion
 
-SubProceso ordenarYMostrar(arrayPacientes, filas, indicePacientes)
-	Definir orden Como Caracter
-	Repetir
-		Escribir "Ordenar y mostrar lista pacientes"
-		Escribir "   a. Por edad"
-		Escribir "   b. Por vacuna a aplicar"
-		Leer orden
-	Mientras Que orden<>"a" y orden<>"b"
-	
-	si orden="a" Entonces
-		ordenarLista(arrayPacientes, filas , 6, 2, indicePacientes)
-	SiNo
-		ordenarLista(arrayPacientes, filas , 6, 3, indicePacientes)
-	FinSi
-FinSubProceso
-
-SubProceso ordenarLista(arrayPacientes, filas, columnas, columnaAOrdenar, indicePacientes)	
-	Definir aux, aux2 Como caracter; 
-	Para i<-0 Hasta filas-2 Hacer 
-		para k<-i+1 hasta filas-1 Hacer 
-			si arrayPacientes[i,columnaAOrdenar] < arrayPacientes[k,columnaAOrdenar] Entonces
-				Para j<-0 Hasta columnas-1 Hacer 
-					aux <- arrayPacientes[i,j];
-					arrayPacientes[i,j] <- arrayPacientes[k,j]; 
-					arrayPacientes[k,j] <- aux; 
-				Fin Para
-			FinSi
-		FinPara
-	FinPara
-	
-	Para i = 0 Hasta indicePacientes - 1 Hacer
-		Mostrar "Nombre y apellido: ", arrayPacientes[i, 0]
-		Mostrar "DNI: ", arrayPacientes[i, 1]
-		Mostrar "Edad: ", arrayPacientes[i, 2]
-		Mostrar "Vacuna: ", arrayPacientes[i, 3]
-		Mostrar "Día: ", arrayPacientes[i, 4]
-		Mostrar "Hora: ", arrayPacientes[i, 5]
-		Mostrar " "
-	FinPara
-FinSubProceso
-
-SubProceso buscarPaciente(arrayPacientes) 
+SubProceso buscarPaciente(arrayPacientes, filasPacientes) 
     Definir dni Como Caracter
     Definir i como Entero
     Definir encontrado Como Logico
@@ -409,7 +385,7 @@ SubProceso buscarPaciente(arrayPacientes)
     i = 0
     encontrado = Falso
 	
-    Mientras i < 5 y no encontrado
+    Mientras i < filasPacientes-1 y no encontrado
         Si arrayPacientes[i,1] == dni Entonces
             encontrado = Verdadero
             Mostrar "Nombre y apellido: ", arrayPacientes[i, 0]
@@ -433,7 +409,7 @@ Funcion encontrado = buscarDNI(arrayPacientes, filas, columnaABuscar, datoAEncon
     Definir encontrado Como Logico
     indexPaciente = 0
     encontrado = Falso
-
+	
     Mientras indexPaciente < filas - 1 y no encontrado
         Si arrayPacientes[indexPaciente, columnaABuscar] == datoAEncontrar Entonces
             encontrado = Verdadero
@@ -451,6 +427,47 @@ SubProceso mostrarAgenda(array,filas,columnas)
 		Mostrar " "
 		Mostrar " "
 	Fin Para
+FinSubProceso
+
+SubProceso ordenarYMostrar(arrayPacientes, filas, columnasPaciente, indicePacientes)
+	Definir orden Como Caracter
+	Repetir
+		Escribir "Ordenar y mostrar lista pacientes"
+		Escribir "   a. Por edad"
+		Escribir "   b. Por vacuna a aplicar"
+		Leer orden
+	Mientras Que orden<>"a" y orden<>"b"
+	
+	si orden="a" Entonces
+		ordenarLista(arrayPacientes, filas , columnasPaciente, 2, indicePacientes)
+	SiNo
+		ordenarLista(arrayPacientes, filas , columnasPaciente, 3, indicePacientes)
+	FinSi
+FinSubProceso
+
+SubProceso ordenarLista(arrayPacientes, filas, columnasPaciente, columnaAOrdenar, indicePacientes)	
+	Definir aux, aux2 Como caracter; 
+	Para i<-0 Hasta filas-2 Hacer 
+		para k<-i+1 hasta filas-1 Hacer 
+			si arrayPacientes[i,columnaAOrdenar] < arrayPacientes[k,columnaAOrdenar] Entonces
+				Para j<-0 Hasta columnasPaciente-1 Hacer 
+					aux <- arrayPacientes[i,j];
+					arrayPacientes[i,j] <- arrayPacientes[k,j]; 
+					arrayPacientes[k,j] <- aux; 
+				Fin Para
+			FinSi
+		FinPara
+	FinPara
+	
+	Para i = 0 Hasta indicePacientes - 1 Hacer
+		Mostrar "Nombre y apellido: ", arrayPacientes[i, 0]
+		Mostrar "DNI: ", arrayPacientes[i, 1]
+		Mostrar "Edad: ", arrayPacientes[i, 2]
+		Mostrar "Vacuna: ", arrayPacientes[i, 3]
+		Mostrar "Día: ", arrayPacientes[i, 4]
+		Mostrar "Hora: ", arrayPacientes[i, 5]
+		Mostrar " "
+	FinPara
 FinSubProceso
 
 SubProceso mostrarContadores(arrayPacientes, filas)
