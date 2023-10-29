@@ -48,7 +48,7 @@ Algoritmo turnosVacunatorio
 	
 	// array del stock cuyo indice corresponde al del arrays de vacunas
 	Dimension stockVacunas[6]
-	stockVacunas[0] = 0
+	stockVacunas[0] = 10
 	stockVacunas[1] = 10
 	stockVacunas[2] = 10
 	stockVacunas[3] = 10
