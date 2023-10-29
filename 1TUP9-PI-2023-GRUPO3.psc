@@ -175,7 +175,7 @@ SubProceso elegirTurno(arregloHorarios, filas, columnas, pacientes, indicePacien
 				Escribir "Error: elija el dia 1-5"
 				Leer diaCaracter
 				dia = ConvertirANumero(diaCaracter)
-				esNumero = validarDato(diaCarac)
+				esNumero = validarDato(diaCaracter)
 			FinMientras
 		FinSi
 		
