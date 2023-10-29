@@ -32,7 +32,7 @@ Algoritmo turnosVacunatorio
 	
 	// ciclo para cargar el arreglo de los horarios
 	Para i = 0 Hasta filasHorarios - 1
-		Para j = 0 Hasta 7  
+		Para j = 0 Hasta columnasHorarios - 2  
 			turnosHorarios[i,j + 1] = horarios[j]
 		FinPara
 	FinPara
@@ -48,7 +48,7 @@ Algoritmo turnosVacunatorio
 	
 	// array del stock cuyo indice corresponde al del arrays de vacunas
 	Dimension stockVacunas[6]
-	stockVacunas[0] = 1
+	stockVacunas[0] = 0
 	stockVacunas[1] = 10
 	stockVacunas[2] = 10
 	stockVacunas[3] = 10
@@ -130,7 +130,7 @@ SubProceso reservarTurno(arregloHorarios, filas, columnas, pacientes, indicePaci
 	mostrarDias(arregloHorarios, filas, columnas)
 	elegirTurno(arregloHorarios, filas, columnas, pacientes, indicePaciente, diaLibre)
 	Si diaLibre
-		cargarPaciente(pacientes, indicePaciente, nombreDuplicado, dniDuplicado)
+		cargarPaciente(pacientes, indicePaciente, dniDuplicado)
 		Si no dniDuplicado Entonces
 			mostrarVacunas(pacientes, vacunas, stockVacunas, filasVacunas)
 			elegirVacuna(pacientes, vacunas, stockVacunas, indicePaciente)
@@ -181,22 +181,22 @@ SubProceso elegirTurno(arregloHorarios, filas, columnas, pacientes, indicePacien
 		
 	Mientras Que no esNumero
 	
-	Para i = dia - 1 Hasta dia- 1 Hacer
-		Para j = 1 hasta 7 Hacer
+	Para i = dia - 1 Hasta dia - 1 Hacer
+		Para j = 1 Hasta 8 Hacer
 			Si Longitud(arregloHorarios[i, j]) > 5 Entonces
 				contadorOcupado = contadorOcupado + 1
 			FinSi
 		FinPara
 	FinPara
 	
-	Si contadorOcupado >= 7 Entonces
+	Si contadorOcupado == 8 Entonces
 		Escribir "El dia que eligió tiene todos los horarios ocupados."
 		Escribir " "
 		diaLibre = Falso
 	Sino 
 		Para i = dia - 1 Hasta dia - 1 Hacer
 			Mostrar arregloHorarios[dia - 1, 0], ":"
-			Para j = 1 hasta 7 Hacer
+			Para j = 1 hasta 8 Hacer
 				Mostrar "  ", j, " - ", arregloHorarios[dia - 1, j]
 			FinPara
 		FinPara
@@ -236,7 +236,7 @@ SubProceso elegirTurno(arregloHorarios, filas, columnas, pacientes, indicePacien
 	FinSi
 FinSubProceso
 
-SubProceso cargarPaciente(pacientes, indicePaciente Por Referencia, nombreDuplicado Por Referencia, dniDuplicado Por Referencia)
+SubProceso cargarPaciente(pacientes, indicePaciente Por Referencia, dniDuplicado Por Referencia)
 	Definir nombre, apellido, dni, edad Como Caracter
 	Definir edadEnMeses Como Logico
 	edadEnMeses = Falso
@@ -266,17 +266,10 @@ SubProceso cargarPaciente(pacientes, indicePaciente Por Referencia, nombreDuplic
 			Escribir "Ingrese su DNI"
 			Leer dni
 			esNumero = validarDato(dni)
-			Mientras no esNumero
-				Escribir "Ingrese un DNI válido"
+			Mientras no esNumero o ConvertirANumero(dni) < 1000000 o ConvertirANumero(dni) > 99999999
+				Escribir "Ingrese un DNI válido menor a 1000000 o mayor a 99999999"
 				Leer dni
 				esNumero = validarDato(dni)
-				Si esNumero
-					Mientras ConvertirANumero(dni) < 1000000 o ConvertirANumero(dni) > 99999999
-						Escribir "Ingrese un DNI menor a 1000000 o mayor a 99999999"
-						Leer dni
-						esNumero = validarDato(dni)
-					FinMientras
-				FinSi
 			FinMientras
 			
 			encontrarDNI = buscarDNI(pacientes, 5, 1, dni)
@@ -342,20 +335,53 @@ SubProceso elegirVacuna(pacientes, vacunas, stockVacunas, indicePaciente Por Ref
 		Mostrar "Que vacuna desea: "
 		Leer entrada
 		esNumero = validarDato(entrada)
-			Mientras no esNumero o ConvertirANumero(entrada) < 1 o ConvertirANumero(entrada) > 6 
+		Si esNumero
+			Mientras ConvertirANumero(entrada) < 1 o ConvertirANumero(entrada) > 6
 				Mostrar "Ingrese una de las vacunas mostradas: "
 				Leer entrada
 				esNumero = validarDato(entrada)
 			FinMientras
-			Mientras no esNumero o stockVacunas[ConvertirANumero(entrada)-1] == 0
-				Escribir "La vacuna que eligió no tiene más stock. Elija otra por favor"
+		FinSi
+	FinMientras
+	
+	Si esNumero
+		Mientras ConvertirANumero(entrada) < 1 o ConvertirANumero(entrada) > 6
+			Mostrar "Ingrese una de las vacunas mostradas: "
+			Leer entrada
+			esNumero = validarDato(entrada)
+			Mientras no esNumero
+				Mostrar "Ingrese un número por favor: "
 				Leer entrada
 				esNumero = validarDato(entrada)
 			FinMientras
-	FinMientras
-	vacunaSelec = vacunas[ConvertirANumero(entrada)-1]
-	stockVacunas[ConvertirANumero(entrada)-1] = (stockVacunas[ConvertirANumero(entrada)-1]) - 1
-	pacientes[indicePaciente, 3] = vacunaSelec
+		FinMientras
+		
+		Mientras no esNumero o stockVacunas[ConvertirANumero(entrada)-1] == 0
+			Mostrar "Esta vacuna no tiene stock. Ingrese otra: "
+			Leer entrada
+			esNumero = validarDato(entrada)
+			Si esNumero
+				Mientras ConvertirANumero(entrada) < 1 o ConvertirANumero(entrada) > 6
+					Mostrar "Ingrese una de las vacunas mostradas: "
+					Leer entrada
+					esNumero = validarDato(entrada)
+					Mientras no esNumero
+						Mostrar "Ingrese un número por favor: "
+						Leer entrada
+						esNumero = validarDato(entrada)
+					FinMientras
+				FinMientras
+			FinSi
+		FinMientras
+	FinSi
+		
+	Si stockVacunas[ConvertirANumero(entrada)-1] > 0
+		vacunaSelec = vacunas[ConvertirANumero(entrada)-1]
+		stockVacunas[ConvertirANumero(entrada)-1] = (stockVacunas[ConvertirANumero(entrada)-1]) - 1
+		Mostrar stockVacunas[ConvertirANumero(entrada)-1]
+		pacientes[indicePaciente, 3] = vacunaSelec
+	FinSi
+	
 FinSubProceso
 
 Funcion esNumero = validarDato(valorIngresado) 
