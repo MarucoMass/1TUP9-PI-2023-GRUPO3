@@ -23,7 +23,7 @@ Algoritmo turnosVacunatorio
     horarios[7] = "11:30"
 	
 	// array con los dias
-	Dimension turnosHorarios[5, 9]
+	Dimension turnosHorarios[filasHorarios, columnasHorarios]
 	turnosHorarios[0,0] = "Lunes"
 	turnosHorarios[1,0] = "Martes"
 	turnosHorarios[2,0] = "Miércoles"
